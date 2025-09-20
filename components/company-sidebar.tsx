@@ -26,7 +26,7 @@ const navigation = [
   { name: "Proyek", href: "/dashboard/company/projects", icon: Briefcase },
   { name: "AI Recommendations", href: "/dashboard/company/recommendations", icon: Sparkles },
   { name: "Analytics", href: "/dashboard/company/analytics", icon: TrendingUp },
-  { name: "Messages", href: "/dashboard/company/messages", icon: MessageSquare },
+  { name: "Pesan", href: "/dashboard/company/messages", icon: MessageSquare },
   { name: "Pengaturan", href: "/dashboard/company/settings", icon: Settings },
 ]
 
