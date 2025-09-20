@@ -107,7 +107,7 @@ export default function PostJobPage() {
                       <SelectValue placeholder="Pilih tipe" />
                     </SelectTrigger>
                     <SelectContent className="bg-gray-800 border-gray-700">
-                      <SelectItem value="freelance">Freelance</SelectItem>
+                      <SelectItem value="freelance&microtask">Freelance & Micro Task</SelectItem>
                       <SelectItem value="part-time">Part-time</SelectItem>
                       <SelectItem value="contract">Contract</SelectItem>
                       <SelectItem value="full-time">Full-time</SelectItem>
