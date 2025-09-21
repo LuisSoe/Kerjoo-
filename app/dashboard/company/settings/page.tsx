@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { CompanySidebar } from "@/components/company-sidebar"
-import { Save, Building, Bell, Shield, CreditCard, Users, Globe } from "lucide-react"
+import { Save, Building, Bell, Shield, Users, Globe } from "lucide-react"
 
 export default function CompanySettings() {
   const router = useRouter()
@@ -252,33 +252,6 @@ export default function CompanySettings() {
                   checked={settings.requireNDA}
                   onCheckedChange={(checked) => handleSettingChange("requireNDA", checked)}
                 />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Payment Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5" />
-                Pembayaran
-              </CardTitle>
-              <CardDescription>Kelola metode pembayaran dan billing</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="billing-email">Billing Email</Label>
-                <Input id="billing-email" value="finance@digitalnusantara.com" className="mt-1" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="payment-method">Payment Method</Label>
-                  <Input id="payment-method" value="Bank Transfer (BCA)" className="mt-1" />
-                </div>
-                <div>
-                  <Label htmlFor="billing-cycle">Billing Cycle</Label>
-                  <Input id="billing-cycle" value="Monthly" className="mt-1" />
-                </div>
               </div>
             </CardContent>
           </Card>

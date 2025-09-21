@@ -14,6 +14,18 @@ import { Save, Bell, Shield, User, CreditCard, Globe } from "lucide-react"
 export default function WorkerSettings() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "+62 812-3456-7890",
+    location: "Jakarta, Indonesia",
+    bio: "Saya adalah seorang developer dengan pengalaman 3+ tahun dalam pengembangan web dan mobile.",
+    bankName: "Bank Central Asia (BCA)",
+    accountNumber: "1234567890",
+    accountName: "",
+    language: "Bahasa Indonesia",
+    timezone: "WIB (UTC+7)",
+  })
   const [settings, setSettings] = useState({
     emailNotifications: true,
     pushNotifications: false,
@@ -36,11 +48,24 @@ export default function WorkerSettings() {
     try {
       const parsedUser = JSON.parse(userData)
       setUser(parsedUser)
+      setFormData((prev) => ({
+        ...prev,
+        name: parsedUser.name || "",
+        email: parsedUser.email || "",
+        accountName: parsedUser.name || "",
+      }))
     } catch (error) {
       console.error("Error parsing user data:", error)
       router.push("/login")
     }
   }, [router])
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
 
   const handleSettingChange = (key: string, value: boolean) => {
     setSettings((prev) => ({
@@ -52,6 +77,7 @@ export default function WorkerSettings() {
   const handleSave = () => {
     // Save settings logic here
     console.log("Settings saved:", settings)
+    console.log("Form data saved:", formData)
   }
 
   if (!user) {
@@ -88,28 +114,49 @@ export default function WorkerSettings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="name">Nama Lengkap</Label>
-                  <Input id="name" value={user.name || ""} className="mt-1" />
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    className="mt-1"
+                  />
                 </div>
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" value={user.email || ""} className="mt-1" />
+                  <Input
+                    id="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    className="mt-1"
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="phone">Nomor Telepon</Label>
-                  <Input id="phone" value="+62 812-3456-7890" className="mt-1" />
+                  <Input
+                    id="phone"
+                    value={formData.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    className="mt-1"
+                  />
                 </div>
                 <div>
                   <Label htmlFor="location">Lokasi</Label>
-                  <Input id="location" value="Jakarta, Indonesia" className="mt-1" />
+                  <Input
+                    id="location"
+                    value={formData.location}
+                    onChange={(e) => handleInputChange("location", e.target.value)}
+                    className="mt-1"
+                  />
                 </div>
               </div>
               <div>
                 <Label htmlFor="bio">Bio</Label>
                 <Textarea
                   id="bio"
-                  value="Saya adalah seorang developer dengan pengalaman 3+ tahun dalam pengembangan web dan mobile."
+                  value={formData.bio}
+                  onChange={(e) => handleInputChange("bio", e.target.value)}
                   className="mt-1"
                   rows={3}
                 />
@@ -232,16 +279,31 @@ export default function WorkerSettings() {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="bank-name">Nama Bank</Label>
-                <Input id="bank-name" value="Bank Central Asia (BCA)" className="mt-1" />
+                <Input
+                  id="bank-name"
+                  value={formData.bankName}
+                  onChange={(e) => handleInputChange("bankName", e.target.value)}
+                  className="mt-1"
+                />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="account-number">Nomor Rekening</Label>
-                  <Input id="account-number" value="1234567890" className="mt-1" />
+                  <Input
+                    id="account-number"
+                    value={formData.accountNumber}
+                    onChange={(e) => handleInputChange("accountNumber", e.target.value)}
+                    className="mt-1"
+                  />
                 </div>
                 <div>
                   <Label htmlFor="account-name">Nama Pemilik Rekening</Label>
-                  <Input id="account-name" value={user.name || ""} className="mt-1" />
+                  <Input
+                    id="account-name"
+                    value={formData.accountName}
+                    onChange={(e) => handleInputChange("accountName", e.target.value)}
+                    className="mt-1"
+                  />
                 </div>
               </div>
             </CardContent>
@@ -260,11 +322,21 @@ export default function WorkerSettings() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="language">Bahasa</Label>
-                  <Input id="language" value="Bahasa Indonesia" className="mt-1" />
+                  <Input
+                    id="language"
+                    value={formData.language}
+                    onChange={(e) => handleInputChange("language", e.target.value)}
+                    className="mt-1"
+                  />
                 </div>
                 <div>
                   <Label htmlFor="timezone">Zona Waktu</Label>
-                  <Input id="timezone" value="WIB (UTC+7)" className="mt-1" />
+                  <Input
+                    id="timezone"
+                    value={formData.timezone}
+                    onChange={(e) => handleInputChange("timezone", e.target.value)}
+                    className="mt-1"
+                  />
                 </div>
               </div>
             </CardContent>

@@ -12,7 +12,7 @@ const faqs = [
   {
     question: "Apa itu Kerjoo! dan bagaimana cara kerjanya?",
     answer:
-      "Kerjoo! adalah platform digital yang menghubungkan pekerja mikro dengan perusahaan. Platform ini menggunakan AI untuk menilai skill, mencocokkan pekerjaan, dan menyediakan learning modules untuk pengembangan karir berkelanjutan.",
+      "Kerjoo! adalah platform digital gratis yang menghubungkan pekerja mikro dengan perusahaan. Platform ini menggunakan AI untuk menilai skill, mencocokkan pekerjaan, dan menyediakan learning modules untuk pengembangan karir berkelanjutan.",
   },
   {
     question: "Bagaimana cara mendaftar sebagai pekerja di Kerjoo!?",
@@ -22,7 +22,7 @@ const faqs = [
   {
     question: "Apakah ada biaya untuk menggunakan Kerjoo!?",
     answer:
-      "Kerjoo! menyediakan paket gratis dengan fitur dasar. Untuk fitur premium seperti unlimited job applications dan advanced analytics, tersedia paket Professional seharga Rp 99.000/bulan.",
+      "Tidak! Kerjoo! sepenuhnya gratis untuk semua pengguna. Anda dapat mengakses semua fitur termasuk unlimited job applications, AI assessment, dan learning modules tanpa biaya apapun.",
   },
   {
     question: "Bagaimana sistem pembayaran di Kerjoo!?",
@@ -47,12 +47,12 @@ const faqs = [
   {
     question: "Berapa banyak pekerjaan yang bisa saya lamar?",
     answer:
-      "Pengguna gratis dapat melamar 5 pekerjaan per bulan. Pengguna Professional mendapat akses unlimited untuk melamar pekerjaan tanpa batas.",
+      "Anda dapat melamar pekerjaan tanpa batas! Tidak ada batasan jumlah aplikasi pekerjaan yang dapat Anda kirim.",
   },
   {
     question: "Apa itu Learning Modules dan bagaimana cara mengaksesnya?",
     answer:
-      "Learning Modules adalah kursus singkat yang dirancang untuk meningkatkan skill sesuai kebutuhan pasar. Akses melalui dashboard Anda, pilih kategori yang diminati, dan ikuti pembelajaran interaktif.",
+      "Learning Modules adalah kursus singkat gratis yang dirancang untuk meningkatkan skill sesuai kebutuhan pasar. Akses melalui dashboard Anda, pilih kategori yang diminati, dan ikuti pembelajaran interaktif.",
   },
   {
     question: "Bagaimana cara membangun portfolio yang menarik?",
@@ -88,11 +88,6 @@ const faqs = [
     question: "Bisakah perusahaan mencari talent secara spesifik?",
     answer:
       "Ya, perusahaan dapat menggunakan fitur Talent Pool dengan filter advanced berdasarkan skill, rating, lokasi, dan pengalaman. AI akan merekomendasikan kandidat terbaik untuk setiap proyek.",
-  },
-  {
-    question: "Apa keuntungan upgrade ke paket Professional?",
-    answer:
-      "Paket Professional memberikan unlimited job applications, priority matching, advanced portfolio features, learning modules premium, analytics detail, dan customer support prioritas.",
   },
   {
     question: "Bagaimana cara melaporkan masalah atau bug?",

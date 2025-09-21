@@ -15,8 +15,6 @@ import {
   Search,
   Award,
   CheckCircle,
-  Lock,
-  Zap,
   Target,
   TrendingUp,
   Code,
@@ -36,13 +34,11 @@ interface Course {
   lessons: number
   students: number
   rating: number
-  price: number
   instructor: string
   thumbnail: string
   skills: string[]
   progress?: number
   isEnrolled?: boolean
-  isPremium?: boolean
 }
 
 interface Lesson {
@@ -72,7 +68,6 @@ const courses: Course[] = [
     lessons: 24,
     students: 1250,
     rating: 4.8,
-    price: 299000,
     instructor: "Budi Raharjo",
     thumbnail: "/react-course.png",
     skills: ["React.js", "JavaScript", "JSX", "Components"],
@@ -89,11 +84,9 @@ const courses: Course[] = [
     lessons: 18,
     students: 890,
     rating: 4.9,
-    price: 499000,
     instructor: "Sarah Wijaya",
     thumbnail: "/typescript-course.png",
     skills: ["TypeScript", "Advanced Patterns", "Type Safety"],
-    isPremium: true,
   },
   {
     id: 3,
@@ -105,7 +98,6 @@ const courses: Course[] = [
     lessons: 16,
     students: 2100,
     rating: 4.7,
-    price: 249000,
     instructor: "Maya Sari",
     thumbnail: "/ui-ux-design-course.png",
     skills: ["UI Design", "UX Research", "Figma", "Prototyping"],
@@ -120,7 +112,6 @@ const courses: Course[] = [
     lessons: 12,
     students: 1680,
     rating: 4.6,
-    price: 199000,
     instructor: "Andi Pratama",
     thumbnail: "/content-marketing-course.png",
     skills: ["Content Strategy", "SEO", "Social Media", "Analytics"],
@@ -142,7 +133,7 @@ const sampleLessons: Lesson[] = [
   { id: 3, title: "Your First Component", type: "practice", duration: "30 min", isCompleted: true, isLocked: false },
   { id: 4, title: "Props and State", type: "video", duration: "25 min", isCompleted: false, isLocked: false },
   { id: 5, title: "Event Handling Quiz", type: "quiz", duration: "10 min", isCompleted: false, isLocked: false },
-  { id: 6, title: "Advanced Hooks", type: "video", duration: "35 min", isCompleted: false, isLocked: true },
+  { id: 6, title: "Advanced Hooks", type: "video", duration: "35 min", isCompleted: false, isLocked: false },
 ]
 
 export function LearningModules() {
@@ -173,12 +164,6 @@ export function LearningModules() {
           alt={course.title}
           className="w-full h-48 object-cover rounded-t-lg"
         />
-        {course.isPremium && (
-          <Badge className="absolute top-2 right-2 bg-yellow-500 text-yellow-900">
-            <Zap className="w-3 h-3 mr-1" />
-            Premium
-          </Badge>
-        )}
         {course.isEnrolled && (
           <div className="absolute bottom-2 left-2 right-2">
             <Progress value={course.progress || 0} className="h-2" />
@@ -228,11 +213,11 @@ export function LearningModules() {
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-semibold">Rp {course.price.toLocaleString()}</p>
+            <p className="font-semibold text-primary">Gratis</p>
             <p className="text-xs text-muted-foreground">{course.students} students</p>
           </div>
           <Button size="sm" variant={course.isEnrolled ? "secondary" : "default"}>
-            {course.isEnrolled ? "Lanjutkan" : "Enroll"}
+            {course.isEnrolled ? "Lanjutkan" : "Mulai Belajar"}
           </Button>
         </div>
       </CardContent>
@@ -295,8 +280,6 @@ export function LearningModules() {
                       <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
                         {lesson.isCompleted ? (
                           <CheckCircle className="w-4 h-4 text-green-500" />
-                        ) : lesson.isLocked ? (
-                          <Lock className="w-4 h-4 text-muted-foreground" />
                         ) : (
                           <span className="text-sm font-medium">{index + 1}</span>
                         )}
@@ -311,7 +294,7 @@ export function LearningModules() {
                         </div>
                       </div>
                     </div>
-                    <Button size="sm" variant="ghost" disabled={lesson.isLocked}>
+                    <Button size="sm" variant="ghost">
                       {lesson.type === "video" ? <Play className="w-4 h-4" /> : <BookOpen className="w-4 h-4" />}
                     </Button>
                   </div>
@@ -326,7 +309,7 @@ export function LearningModules() {
           <Card>
             <CardContent className="p-6">
               <div className="text-center mb-4">
-                <div className="text-3xl font-bold mb-2">Rp {selectedCourse?.price.toLocaleString()}</div>
+                <div className="text-3xl font-bold mb-2 text-primary">Gratis</div>
                 {selectedCourse?.isEnrolled && (
                   <div className="mb-4">
                     <div className="flex items-center justify-between text-sm mb-2">
@@ -339,7 +322,7 @@ export function LearningModules() {
               </div>
 
               <Button className="w-full mb-4" size="lg">
-                {selectedCourse?.isEnrolled ? "Lanjutkan Belajar" : "Enroll Sekarang"}
+                {selectedCourse?.isEnrolled ? "Lanjutkan Belajar" : "Mulai Belajar"}
               </Button>
 
               <div className="space-y-3 text-sm">
@@ -409,7 +392,7 @@ export function LearningModules() {
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4">Learning Modules</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Tingkatkan skill Anda dengan kursus berkualitas tinggi dari para ahli
+              Tingkatkan skill Anda dengan kursus gratis berkualitas tinggi dari para ahli
             </p>
           </div>
 

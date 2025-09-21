@@ -17,8 +17,8 @@ export default function ForCompaniesPage() {
             Temukan Talenta Terbaik dengan <span className="text-primary">AI Technology</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Platform recruitment yang menggunakan AI untuk mencocokkan perusahaan Anda dengan talenta mikro terbaik
-            berdasarkan skill dan kebutuhan proyek
+            Platform recruitment gratis yang menggunakan AI untuk mencocokkan perusahaan Anda dengan talenta mikro
+            terbaik berdasarkan skill dan kebutuhan proyek
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
@@ -104,62 +104,6 @@ export default function ForCompaniesPage() {
               <p className="text-muted-foreground">Manajemen proyek terintegrasi dari posting job hingga pembayaran</p>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Pricing */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold mb-8">Paket Berlangganan</h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <Card className="p-6">
-              <CardContent className="p-0">
-                <h3 className="text-xl font-semibold mb-2">Starter</h3>
-                <div className="text-3xl font-bold mb-4">
-                  Rp 500K<span className="text-sm text-muted-foreground">/bulan</span>
-                </div>
-                <ul className="space-y-2 text-muted-foreground mb-6">
-                  <li>• 5 job postings</li>
-                  <li>• Basic analytics</li>
-                  <li>• Email support</li>
-                </ul>
-                <Button variant="outline" className="w-full bg-transparent">
-                  Pilih Paket
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6 border-primary">
-              <CardContent className="p-0">
-                <Badge className="mb-2">Popular</Badge>
-                <h3 className="text-xl font-semibold mb-2">Professional</h3>
-                <div className="text-3xl font-bold mb-4">
-                  Rp 1.5M<span className="text-sm text-muted-foreground">/bulan</span>
-                </div>
-                <ul className="space-y-2 text-muted-foreground mb-6">
-                  <li>• 20 job postings</li>
-                  <li>• Advanced analytics</li>
-                  <li>• Priority support</li>
-                  <li>• AI recommendations</li>
-                </ul>
-                <Button className="w-full">Pilih Paket</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6">
-              <CardContent className="p-0">
-                <h3 className="text-xl font-semibold mb-2">Enterprise</h3>
-                <div className="text-3xl font-bold mb-4">Custom</div>
-                <ul className="space-y-2 text-muted-foreground mb-6">
-                  <li>• Unlimited postings</li>
-                  <li>• Custom integrations</li>
-                  <li>• Dedicated support</li>
-                  <li>• White-label solution</li>
-                </ul>
-                <Button variant="outline" className="w-full bg-transparent">
-                  Hubungi Sales
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
         </div>
 
         {/* CTA */}

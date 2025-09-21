@@ -11,36 +11,27 @@ export default function WorkerDashboardPage() {
   const router = useRouter()
 
   useEffect(() => {
-    console.log("[v0] Worker dashboard loading...")
-
     const checkAuth = () => {
       const userData = sessionStorage.getItem("kerjoo_user") || localStorage.getItem("kerjoo_user")
       const authStatus = sessionStorage.getItem("kerjoo_auth") || localStorage.getItem("kerjoo_auth")
 
-      console.log("[v0] User data from storage:", userData)
-      console.log("[v0] Auth status:", authStatus)
-
       if (!userData || !authStatus) {
-        console.log("[v0] No user data, redirecting to login")
         router.push("/login")
         return
       }
 
       try {
         const parsedUser = JSON.parse(userData)
-        console.log("[v0] Parsed user:", parsedUser)
 
         if (parsedUser.role !== "worker") {
-          console.log("[v0] User is not worker, redirecting to company dashboard")
           router.push("/dashboard/company")
           return
         }
 
-        console.log("[v0] Worker dashboard loaded successfully")
         setUser(parsedUser)
         setIsLoading(false)
       } catch (error) {
-        console.error("[v0] Error parsing user data:", error)
+        console.error("Error parsing user data:", error)
         router.push("/login")
       }
     }
@@ -64,10 +55,12 @@ export default function WorkerDashboardPage() {
   if (!user) return null
 
   return (
-    <div className="flex min-h-screen pt-16">
+    <div className="flex min-h-screen bg-background">
       <WorkerSidebar />
-      <main className="flex-1 ml-64">
-        <WorkerDashboard />
+      <main className="flex-1 ml-64 p-6">
+        <div className="max-w-7xl mx-auto">
+          <WorkerDashboard />
+        </div>
       </main>
     </div>
   )

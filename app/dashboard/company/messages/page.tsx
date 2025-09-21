@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CompanySidebar } from "@/components/company-sidebar"
 import { Search, Send, Paperclip, MoreVertical, Phone, Video } from "lucide-react"
-import { messageService, type Message } from "@/lib/message-service"
 
 const conversations = [
   {
@@ -53,17 +52,50 @@ const conversations = [
   },
 ]
 
+const currentMessages = [
+  {
+    id: 1,
+    sender: "Ahmad Rizki",
+    message: "Halo, saya sudah menyelesaikan mockup untuk halaman utama website e-commerce.",
+    timestamp: "14:30",
+    isOwn: false,
+  },
+  {
+    id: 2,
+    sender: "You",
+    message: "Terima kasih Ahmad! Mockupnya terlihat bagus. Ada beberapa feedback yang ingin saya berikan.",
+    timestamp: "14:32",
+    isOwn: true,
+  },
+  {
+    id: 3,
+    sender: "You",
+    message: "Bisa tolong adjust warna primary button dan spacing di section hero?",
+    timestamp: "14:32",
+    isOwn: true,
+  },
+  {
+    id: 4,
+    sender: "Ahmad Rizki",
+    message: "Baik, akan saya adjust sesuai permintaan. Kira-kira butuh waktu 2 jam untuk revisi.",
+    timestamp: "14:35",
+    isOwn: false,
+  },
+  {
+    id: 5,
+    sender: "Ahmad Rizki",
+    message: "Saya sudah menyelesaikan mockup untuk halaman utama. Bisa direview?",
+    timestamp: "14:58",
+    isOwn: false,
+  },
+]
+
 export default function CompanyMessages() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
   const [selectedConversation, setSelectedConversation] = useState(conversations[0])
   const [newMessage, setNewMessage] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
-  const [messages, setMessages] = useState<Message[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSending, setIsSending] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const pollingCleanupRef = useRef<(() => void) | null>(null)
 
   useEffect(() => {
     const userData = localStorage.getItem("kerjoo_user")
@@ -83,84 +115,18 @@ export default function CompanyMessages() {
     }
   }, [router])
 
-  useEffect(() => {
-    if (selectedConversation && user) {
-      loadMessages()
-      startPolling()
-    }
-
-    return () => {
-      if (pollingCleanupRef.current) {
-        pollingCleanupRef.current()
-        pollingCleanupRef.current = null
-      }
-    }
-  }, [selectedConversation, user])
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
-  const loadMessages = async () => {
-    if (!selectedConversation) return
-
-    setIsLoading(true)
-    try {
-      const fetchedMessages = await messageService.getMessages(selectedConversation.id)
-      setMessages(fetchedMessages)
-    } catch (error) {
-      console.error("Error loading messages:", error)
-    } finally {
-      setIsLoading(false)
+  const handleSendMessage = () => {
+    if (newMessage.trim()) {
+      // Add message logic here
+      setNewMessage("")
     }
   }
 
-  const startPolling = () => {
-    if (!selectedConversation || !user) return
-
-    if (pollingCleanupRef.current) {
-      pollingCleanupRef.current()
-    }
-
-    pollingCleanupRef.current = messageService.startPolling(selectedConversation.id, (newMessage) => {
-      setMessages((prev) => {
-        if (prev.some((msg) => msg.id === newMessage.id)) {
-          return prev
-        }
-        return [...prev, newMessage]
-      })
-    })
-  }
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
-  const handleSendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation || !user || isSending) return
-
-    setIsSending(true)
-    try {
-      const sentMessage = await messageService.sendMessage(selectedConversation.id, user.id || "company_1", newMessage)
-
-      if (sentMessage) {
-        setMessages((prev) => [...prev, sentMessage])
-        setNewMessage("")
-      }
-    } catch (error) {
-      console.error("Error sending message:", error)
-    } finally {
-      setIsSending(false)
-    }
-  }
-
-  const formatTimestamp = (timestamp: string) => {
-    const date = new Date(timestamp)
-    return date.toLocaleTimeString("id-ID", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
+  const filteredConversations = conversations.filter(
+    (conv) =>
+      conv.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      conv.project.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
   if (!user) {
     return <div>Loading...</div>
@@ -188,50 +154,44 @@ export default function CompanyMessages() {
             </div>
 
             <div className="overflow-y-auto">
-              {conversations
-                .filter(
-                  (conv) =>
-                    conv.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    conv.project.toLowerCase().includes(searchTerm.toLowerCase()),
-                )
-                .map((conversation) => (
-                  <div
-                    key={conversation.id}
-                    className={`p-4 border-b border-border cursor-pointer hover:bg-accent transition-colors ${
-                      selectedConversation.id === conversation.id ? "bg-accent" : ""
-                    }`}
-                    onClick={() => setSelectedConversation(conversation)}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="relative">
-                        <Avatar>
-                          <AvatarImage src={conversation.avatar || "/placeholder.svg"} />
-                          <AvatarFallback>{conversation.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        {conversation.online && (
-                          <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-medium truncate">{conversation.name}</h3>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground">{conversation.timestamp}</span>
-                            {conversation.unread > 0 && (
-                              <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0">
-                                {conversation.unread}
-                              </Badge>
-                            )}
-                          </div>
+              {filteredConversations.map((conversation) => (
+                <div
+                  key={conversation.id}
+                  className={`p-4 border-b border-border cursor-pointer hover:bg-accent transition-colors ${
+                    selectedConversation.id === conversation.id ? "bg-accent" : ""
+                  }`}
+                  onClick={() => setSelectedConversation(conversation)}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="relative">
+                      <Avatar>
+                        <AvatarImage src={conversation.avatar || "/placeholder.svg"} />
+                        <AvatarFallback>{conversation.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      {conversation.online && (
+                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-medium truncate">{conversation.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted-foreground">{conversation.timestamp}</span>
+                          {conversation.unread > 0 && (
+                            <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0">
+                              {conversation.unread}
+                            </Badge>
+                          )}
                         </div>
-                        <p className="text-sm text-muted-foreground truncate mt-1">{conversation.lastMessage}</p>
-                        <Badge variant="outline" className="text-xs mt-2">
-                          {conversation.project}
-                        </Badge>
                       </div>
+                      <p className="text-sm text-muted-foreground truncate mt-1">{conversation.lastMessage}</p>
+                      <Badge variant="outline" className="text-xs mt-2">
+                        {conversation.project}
+                      </Badge>
                     </div>
                   </div>
-                ))}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -273,34 +233,24 @@ export default function CompanyMessages() {
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {isLoading ? (
-                <div className="flex justify-center items-center h-32">
-                  <div className="text-muted-foreground">Loading messages...</div>
+              {currentMessages.map((message) => (
+                <div key={message.id} className={`flex ${message.isOwn ? "justify-end" : "justify-start"}`}>
+                  <div
+                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                      message.isOwn ? "bg-primary text-primary-foreground" : "bg-muted"
+                    }`}
+                  >
+                    <p className="text-sm">{message.message}</p>
+                    <p
+                      className={`text-xs mt-1 ${
+                        message.isOwn ? "text-primary-foreground/70" : "text-muted-foreground"
+                      }`}
+                    >
+                      {message.timestamp}
+                    </p>
+                  </div>
                 </div>
-              ) : (
-                <>
-                  {messages.map((message) => {
-                    const isOwn = message.senderId === (user?.id || "company_1")
-                    return (
-                      <div key={message.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
-                        <div
-                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                            isOwn ? "bg-primary text-primary-foreground" : "bg-muted"
-                          }`}
-                        >
-                          <p className="text-sm">{message.message}</p>
-                          <p
-                            className={`text-xs mt-1 ${isOwn ? "text-primary-foreground/70" : "text-muted-foreground"}`}
-                          >
-                            {formatTimestamp(message.timestamp)}
-                          </p>
-                        </div>
-                      </div>
-                    )
-                  })}
-                  <div ref={messagesEndRef} />
-                </>
-              )}
+              ))}
             </div>
 
             {/* Message Input */}
@@ -313,11 +263,10 @@ export default function CompanyMessages() {
                   placeholder="Ketik pesan..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && handleSendMessage()}
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   className="flex-1"
-                  disabled={isSending}
                 />
-                <Button onClick={handleSendMessage} disabled={!newMessage.trim() || isSending}>
+                <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>
                   <Send className="w-4 h-4" />
                 </Button>
               </div>

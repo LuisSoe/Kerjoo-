@@ -64,9 +64,9 @@ export default function CompanyDashboardPage() {
   if (!user) return null
 
   return (
-    <div className="flex min-h-screen pt-16">
+    <div className="flex min-h-screen bg-background">
       <CompanySidebar />
-      <main className="flex-1 ml-64">
+      <main className="flex-1 ml-64 p-6">
         <CompanyDashboard />
       </main>
     </div>

@@ -150,7 +150,7 @@ export default function JobSearchPage() {
                     </SelectTrigger>
                     <SelectContent className="bg-gray-800 border-gray-700">
                       <SelectItem value="all">Semua Tipe</SelectItem>
-                      <SelectItem value="freelance&microtask">Freelance & Micro Task</SelectItem>
+                      <SelectItem value="freelance">Freelance</SelectItem>
                       <SelectItem value="part-time">Part-time</SelectItem>
                       <SelectItem value="contract">Contract</SelectItem>
                     </SelectContent>

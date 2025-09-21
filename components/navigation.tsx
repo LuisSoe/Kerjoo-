@@ -4,12 +4,15 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Menu, X, Zap, User, LogOut } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
   const router = useRouter()
+  const pathname = usePathname()
+
+  const isDashboardPage = pathname?.startsWith("/dashboard/")
 
   useEffect(() => {
     const userData = sessionStorage.getItem("kerjoo_user") || localStorage.getItem("kerjoo_user")
@@ -26,6 +29,10 @@ export function Navigation() {
     setUser(null)
     router.push("/")
     setIsOpen(false)
+  }
+
+  if (isDashboardPage) {
+    return null
   }
 
   return (
