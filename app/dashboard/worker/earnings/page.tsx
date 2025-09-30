@@ -175,7 +175,10 @@ export default function WorkerEarnings() {
             <CardContent>
               <div className="space-y-4">
                 {earningsData.map((earning) => (
-                  <div key={earning.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div
+                    key={earning.id}
+                    className="flex items-center justify-between p-4 border-2 border-[#374151] rounded-lg"
+                  >
                     <div className="flex-1">
                       <h4 className="font-medium">{earning.project}</h4>
                       <p className="text-sm text-muted-foreground">{earning.client}</p>
@@ -207,7 +210,10 @@ export default function WorkerEarnings() {
             <CardContent>
               <div className="space-y-4">
                 {monthlyStats.map((stat, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 border-2 border-[#374151] rounded-lg"
+                  >
                     <div>
                       <h4 className="font-medium">{stat.month}</h4>
                       <p className="text-sm text-muted-foreground">{stat.projects} proyek selesai</p>

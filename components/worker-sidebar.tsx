@@ -18,6 +18,7 @@ import {
   Zap,
   Bell,
   Search,
+  MessageSquare,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -26,6 +27,7 @@ const navigation = [
   { name: "Cari Kerja", href: "/dashboard/worker/jobs", icon: Search },
   { name: "Profil", href: "/dashboard/worker/profile", icon: User },
   { name: "Proyek", href: "/dashboard/worker/projects", icon: Briefcase },
+  { name: "Pesan", href: "/dashboard/worker/messages", icon: MessageSquare }, // Added Messages navigation item
   { name: "Skills", href: "/dashboard/worker/skills", icon: TrendingUp },
   { name: "Belajar", href: "/dashboard/worker/learning", icon: BookOpen },
   { name: "Dompet", href: "/dashboard/worker/wallet", icon: Wallet },

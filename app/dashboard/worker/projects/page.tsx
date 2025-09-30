@@ -18,7 +18,7 @@ const projects = [
     budget: "Rp 15,000,000",
     deadline: "2024-01-15",
     progress: 100,
-    description: "Pengembangan website e-commerce lengkap dengan sistem pembayaran dan manajemen inventory.",
+    description: "Pengembangan website e-commerce lengkap dengan sistem pembayaran.",
   },
   {
     id: 2,
@@ -152,7 +152,7 @@ export default function WorkerProjects() {
           {/* Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProjects.map((project) => (
-              <Card key={project.id} className="hover:shadow-lg transition-shadow">
+              <Card key={project.id} className="hover:shadow-lg transition-shadow h-full flex flex-col">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -162,7 +162,7 @@ export default function WorkerProjects() {
                     {getStatusBadge(project.status)}
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 flex-1 flex flex-col">
                   <p className="text-sm text-muted-foreground">{project.description}</p>
 
                   <div className="space-y-2">
@@ -196,7 +196,7 @@ export default function WorkerProjects() {
                     </div>
                   </div>
 
-                  <Button className="w-full bg-transparent" variant="outline">
+                  <Button className="w-full bg-transparent mt-auto" variant="outline">
                     Lihat Detail
                   </Button>
                 </CardContent>

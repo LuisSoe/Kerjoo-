@@ -11,67 +11,138 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const jobs = [
   {
     id: 1,
-    title: "UI/UX Designer untuk Mobile App",
+    title: "Design Logo untuk Startup",
     company: "TechStart Indonesia",
     location: "Remote",
-    type: "Freelance",
-    budget: "Rp 2,500,000 - Rp 4,000,000",
-    duration: "2-3 minggu",
-    skills: ["Figma", "Adobe XD", "Prototyping", "User Research"],
+    type: "Microtask",
+    budget: "Rp 150,000 - Rp 300,000",
+    duration: "2-3 hari",
+    skills: ["Logo Design", "Illustrator", "Branding"],
     description:
-      "Mencari UI/UX designer berpengalaman untuk merancang aplikasi mobile e-commerce. Harus memiliki portfolio yang kuat dan pengalaman minimal 2 tahun.",
+      "Butuh logo sederhana untuk startup teknologi. Format vector, 3 konsep awal, revisi 2x. Portfolio logo wajib ada.",
     rating: 4.8,
     reviews: 127,
-    posted: "2 hari yang lalu",
+    posted: "2 jam yang lalu",
     saved: false,
+    urgency: "high",
   },
   {
     id: 2,
-    title: "Content Writer untuk Blog Teknologi",
+    title: "Tulis 5 Artikel Blog SEO",
     company: "Digital Media Corp",
-    location: "Jakarta",
-    type: "Part-time",
-    budget: "Rp 500,000 - Rp 800,000",
-    duration: "1 minggu",
-    skills: ["Content Writing", "SEO", "Research", "WordPress"],
+    location: "Remote",
+    type: "Microjob",
+    budget: "Rp 75,000 - Rp 100,000",
+    duration: "1-2 hari",
+    skills: ["Content Writing", "SEO", "Research"],
     description:
-      "Membutuhkan content writer untuk menulis artikel blog tentang teknologi terbaru. Minimal 5 artikel per minggu dengan kualitas SEO yang baik.",
+      "Tulis 5 artikel blog 500 kata tentang teknologi. Keyword sudah disediakan. Harus SEO friendly dan original.",
     rating: 4.6,
     reviews: 89,
-    posted: "1 hari yang lalu",
+    posted: "4 jam yang lalu",
     saved: true,
+    urgency: "medium",
   },
   {
     id: 3,
-    title: "React Developer untuk Dashboard Admin",
+    title: "Fix Bug React Component",
     company: "StartupXYZ",
     location: "Remote",
-    type: "Contract",
-    budget: "Rp 8,000,000 - Rp 12,000,000",
-    duration: "1-2 bulan",
-    skills: ["React.js", "TypeScript", "Node.js", "MongoDB"],
+    type: "Microtask",
+    budget: "Rp 200,000 - Rp 400,000",
+    duration: "1 hari",
+    skills: ["React.js", "JavaScript", "Debugging"],
     description:
-      "Mengembangkan dashboard admin untuk platform e-learning. Membutuhkan developer dengan pengalaman React.js minimal 3 tahun.",
+      "Ada bug di component React untuk form validation. Butuh fix cepat dalam 24 jam. Code sudah ada, tinggal debug.",
     rating: 4.9,
     reviews: 203,
-    posted: "3 hari yang lalu",
+    posted: "1 jam yang lalu",
     saved: false,
+    urgency: "high",
   },
   {
     id: 4,
-    title: "Social Media Manager",
+    title: "Edit 10 Foto Produk",
     company: "Fashion Brand Co",
-    location: "Bandung",
-    type: "Freelance",
-    budget: "Rp 1,500,000 - Rp 2,500,000",
-    duration: "1 bulan",
-    skills: ["Social Media", "Content Creation", "Analytics", "Canva"],
+    location: "Remote",
+    type: "Microtask",
+    budget: "Rp 100,000 - Rp 200,000",
+    duration: "1 hari",
+    skills: ["Photo Editing", "Photoshop", "Color Correction"],
     description:
-      "Mengelola akun social media brand fashion. Membuat konten kreatif dan menganalisis performa engagement.",
+      "Edit 10 foto produk fashion: background removal, color correction, resize untuk e-commerce. Template disediakan.",
     rating: 4.7,
     reviews: 156,
-    posted: "5 hari yang lalu",
+    posted: "3 jam yang lalu",
     saved: false,
+    urgency: "medium",
+  },
+  {
+    id: 5,
+    title: "Buat Landing Page Sederhana",
+    company: "Local Business",
+    location: "Remote",
+    type: "Microjob",
+    budget: "Rp 300,000 - Rp 500,000",
+    duration: "2-3 hari",
+    skills: ["HTML", "CSS", "JavaScript", "Responsive"],
+    description:
+      "Landing page 1 halaman untuk bisnis lokal. Design sudah ada, tinggal coding. Responsive dan fast loading.",
+    rating: 4.5,
+    reviews: 67,
+    posted: "5 jam yang lalu",
+    saved: false,
+    urgency: "low",
+  },
+  {
+    id: 6,
+    title: "Translate 20 Halaman EN-ID",
+    company: "Content Agency",
+    location: "Remote",
+    type: "Microtask",
+    budget: "Rp 150,000 - Rp 250,000",
+    duration: "1-2 hari",
+    skills: ["Translation", "English", "Indonesian"],
+    description:
+      "Translate 20 halaman dokumen teknis dari English ke Indonesian. Harus akurat dan natural. Domain IT/Tech.",
+    rating: 4.4,
+    reviews: 92,
+    posted: "6 jam yang lalu",
+    saved: false,
+    urgency: "medium",
+  },
+  {
+    id: 7,
+    title: "Setup WordPress + Plugin",
+    company: "Small Business",
+    location: "Remote",
+    type: "Microtask",
+    budget: "Rp 100,000 - Rp 200,000",
+    duration: "4-6 jam",
+    skills: ["WordPress", "Plugin Setup", "Configuration"],
+    description:
+      "Install WordPress, theme, dan 5 plugin essential. Basic configuration dan tutorial singkat untuk client.",
+    rating: 4.6,
+    reviews: 134,
+    posted: "8 jam yang lalu",
+    saved: false,
+    urgency: "low",
+  },
+  {
+    id: 8,
+    title: "Data Entry 500 Kontak",
+    company: "Marketing Agency",
+    location: "Remote",
+    type: "Microtask",
+    budget: "Rp 75,000 - Rp 125,000",
+    duration: "1 hari",
+    skills: ["Data Entry", "Excel", "Accuracy"],
+    description: "Input 500 data kontak dari business card ke Excel. Format template sudah ada. Akurasi 99% required.",
+    rating: 4.3,
+    reviews: 78,
+    posted: "10 jam yang lalu",
+    saved: false,
+    urgency: "medium",
   },
 ]
 
@@ -95,9 +166,11 @@ export default function JobSearchPage() {
       selectedCategory === "all" ||
       job.skills.some(
         (skill) =>
-          (selectedCategory === "design" && ["Figma", "Adobe XD", "Canva"].includes(skill)) ||
-          (selectedCategory === "development" && ["React.js", "Node.js", "TypeScript"].includes(skill)) ||
-          (selectedCategory === "content" && ["Content Writing", "SEO", "Social Media"].includes(skill)),
+          (selectedCategory === "design" &&
+            ["Logo Design", "Illustrator", "Photo Editing", "Photoshop"].includes(skill)) ||
+          (selectedCategory === "development" &&
+            ["React.js", "JavaScript", "HTML", "CSS", "WordPress"].includes(skill)) ||
+          (selectedCategory === "content" && ["Content Writing", "SEO", "Translation", "Data Entry"].includes(skill)),
       )
 
     const matchesType = selectedType === "all" || job.type.toLowerCase() === selectedType
@@ -105,13 +178,28 @@ export default function JobSearchPage() {
     return matchesSearch && matchesCategory && matchesType
   })
 
+  const getUrgencyColor = (urgency: string) => {
+    switch (urgency) {
+      case "high":
+        return "bg-red-500/10 text-red-500 border-red-500/20"
+      case "medium":
+        return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+      case "low":
+        return "bg-green-500/10 text-green-500 border-green-500/20"
+      default:
+        return "bg-gray-500/10 text-gray-500 border-gray-500/20"
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="border-b border-gray-800 bg-gray-900/50">
+      <div className="border-b border-border bg-card/50">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-blue-400 mb-2">Cari Pekerjaan</h1>
-          <p className="text-gray-400">Temukan proyek dan pekerjaan yang sesuai dengan keahlian Anda</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Cari Microtask & Microjob</h1>
+          <p className="text-muted-foreground">
+            Temukan pekerjaan cepat dan mudah yang bisa diselesaikan dalam hitungan jam atau hari
+          </p>
         </div>
       </div>
 
@@ -119,58 +207,75 @@ export default function JobSearchPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
           <div className="lg:col-span-1">
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
+                <CardTitle className="text-foreground flex items-center gap-2">
                   <Filter className="h-5 w-5" />
-                  Filter Pekerjaan
+                  Filter Microtask
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-300 mb-2 block">Kategori</label>
+                  <label className="text-sm font-medium text-muted-foreground mb-2 block">Kategori</label>
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                    <SelectTrigger className="bg-input border-border text-foreground">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
+                    <SelectContent className="bg-popover border-border">
                       <SelectItem value="all">Semua Kategori</SelectItem>
-                      <SelectItem value="design">Design & UI/UX</SelectItem>
-                      <SelectItem value="development">Development</SelectItem>
-                      <SelectItem value="content">Content & Marketing</SelectItem>
+                      <SelectItem value="design">Design & Visual</SelectItem>
+                      <SelectItem value="development">Development & Tech</SelectItem>
+                      <SelectItem value="content">Content & Data</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-300 mb-2 block">Tipe Pekerjaan</label>
+                  <label className="text-sm font-medium text-muted-foreground mb-2 block">Tipe Task</label>
                   <Select value={selectedType} onValueChange={setSelectedType}>
-                    <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+                    <SelectTrigger className="bg-input border-border text-foreground">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
+                    <SelectContent className="bg-popover border-border">
                       <SelectItem value="all">Semua Tipe</SelectItem>
-                      <SelectItem value="freelance">Freelance</SelectItem>
-                      <SelectItem value="part-time">Part-time</SelectItem>
-                      <SelectItem value="contract">Contract</SelectItem>
+                      <SelectItem value="microtask">Microtask (1-3 hari)</SelectItem>
+                      <SelectItem value="microjob">Microjob (3-7 hari)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-gray-300 mb-2 block">Budget Range</label>
+                  <label className="text-sm font-medium text-muted-foreground mb-2 block">Budget Range</label>
                   <div className="space-y-2">
                     <label className="flex items-center space-x-2">
-                      <input type="checkbox" className="rounded border-gray-600 bg-gray-800" />
-                      <span className="text-sm text-gray-300">&lt; Rp 1,000,000</span>
+                      <input type="checkbox" className="rounded border-border bg-input" />
+                      <span className="text-sm text-muted-foreground">&lt; Rp 100,000</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                      <input type="checkbox" className="rounded border-gray-600 bg-gray-800" />
-                      <span className="text-sm text-gray-300">Rp 1,000,000 - Rp 5,000,000</span>
+                      <input type="checkbox" className="rounded border-border bg-input" />
+                      <span className="text-sm text-muted-foreground">Rp 100,000 - Rp 300,000</span>
                     </label>
                     <label className="flex items-center space-x-2">
-                      <input type="checkbox" className="rounded border-gray-600 bg-gray-800" />
-                      <span className="text-sm text-gray-300">&gt; Rp 5,000,000</span>
+                      <input type="checkbox" className="rounded border-border bg-input" />
+                      <span className="text-sm text-muted-foreground">&gt; Rp 300,000</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground mb-2 block">Urgency</label>
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded border-border bg-input" />
+                      <span className="text-sm text-red-500">High (Rush Job)</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded border-border bg-input" />
+                      <span className="text-sm text-yellow-500">Medium</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input type="checkbox" className="rounded border-border bg-input" />
+                      <span className="text-sm text-green-500">Low (Flexible)</span>
                     </label>
                   </div>
                 </div>
@@ -183,37 +288,37 @@ export default function JobSearchPage() {
             {/* Search Bar */}
             <div className="mb-6">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
                 <Input
-                  placeholder="Cari pekerjaan, perusahaan, atau skill..."
+                  placeholder="Cari microtask, skill, atau perusahaan..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                  className="pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
                 />
               </div>
             </div>
 
             {/* Results Count */}
             <div className="mb-6">
-              <p className="text-gray-400">
-                Menampilkan {filteredJobs.length} pekerjaan dari {jobs.length} total pekerjaan
+              <p className="text-muted-foreground">
+                Menampilkan {filteredJobs.length} microtask dari {jobs.length} total task tersedia
               </p>
             </div>
 
             {/* Job Cards */}
             <div className="space-y-6">
               {filteredJobs.map((job) => (
-                <Card key={job.id} className="bg-gray-900 border-gray-800 hover:border-blue-500 transition-colors">
+                <Card key={job.id} className="bg-card border-border hover:border-primary transition-colors">
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-xl font-semibold text-white">{job.title}</h3>
+                          <h3 className="text-xl font-semibold text-foreground">{job.title}</h3>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => toggleSaveJob(job.id)}
-                            className="text-gray-400 hover:text-blue-400"
+                            className="text-muted-foreground hover:text-primary"
                           >
                             {savedJobs.includes(job.id) ? (
                               <BookmarkCheck className="h-5 w-5" />
@@ -222,8 +327,8 @@ export default function JobSearchPage() {
                             )}
                           </Button>
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-gray-400 mb-3">
-                          <span className="font-medium text-blue-400">{job.company}</span>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                          <span className="font-medium text-primary">{job.company}</span>
                           <div className="flex items-center gap-1">
                             <MapPin className="h-4 w-4" />
                             {job.location}
@@ -239,36 +344,43 @@ export default function JobSearchPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <Badge variant="secondary" className="bg-blue-600 text-white mb-2">
-                          {job.type}
-                        </Badge>
-                        <div className="flex items-center gap-1 text-green-400 font-semibold">
+                        <div className="flex gap-2 mb-2">
+                          <Badge variant="default" className="bg-primary text-primary-foreground">
+                            {job.type}
+                          </Badge>
+                          <Badge variant="outline" className={getUrgencyColor(job.urgency)}>
+                            {job.urgency === "high" ? "Rush" : job.urgency === "medium" ? "Normal" : "Flexible"}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-1 text-primary font-semibold">
                           <DollarSign className="h-4 w-4" />
                           {job.budget}
                         </div>
                       </div>
                     </div>
 
-                    <p className="text-gray-300 mb-4 line-clamp-2">{job.description}</p>
+                    <p className="text-muted-foreground mb-4 line-clamp-2">{job.description}</p>
 
                     <div className="flex flex-wrap gap-2 mb-4">
                       {job.skills.map((skill) => (
-                        <Badge key={skill} variant="outline" className="border-gray-600 text-gray-300">
+                        <Badge key={skill} variant="outline" className="border-border text-muted-foreground">
                           {skill}
                         </Badge>
                       ))}
                     </div>
 
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-400">{job.posted}</span>
+                      <span className="text-sm text-muted-foreground">{job.posted}</span>
                       <div className="flex gap-2">
                         <Button
                           variant="outline"
-                          className="border-gray-600 text-gray-300 hover:bg-gray-800 bg-transparent"
+                          className="border-border text-muted-foreground hover:bg-accent hover:text-accent-foreground bg-transparent"
                         >
                           Lihat Detail
                         </Button>
-                        <Button className="bg-blue-600 hover:bg-blue-700 text-white">Lamar Sekarang</Button>
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                          {job.urgency === "high" ? "Apply Fast!" : "Lamar Sekarang"}
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
@@ -278,9 +390,9 @@ export default function JobSearchPage() {
 
             {filteredJobs.length === 0 && (
               <div className="text-center py-12">
-                <div className="text-gray-400 mb-4">
+                <div className="text-muted-foreground mb-4">
                   <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg">Tidak ada pekerjaan yang sesuai dengan filter Anda</p>
+                  <p className="text-lg">Tidak ada microtask yang sesuai dengan filter Anda</p>
                   <p className="text-sm">Coba ubah kata kunci pencarian atau filter yang dipilih</p>
                 </div>
               </div>

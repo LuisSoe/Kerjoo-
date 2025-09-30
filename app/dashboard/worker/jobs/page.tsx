@@ -57,7 +57,7 @@ const jobListings = [
       "/placeholder.svg?height=24&width=24",
     ],
   },
-  
+
   {
     id: 4,
     title: "Senior UI/UX Designer",
@@ -143,7 +143,7 @@ export default function WorkerJobsPage() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>Memuat halaman...</p>
+          <p className="text-foreground">Memuat halaman...</p>
         </div>
       </div>
     )
@@ -152,42 +152,42 @@ export default function WorkerJobsPage() {
   if (!user) return null
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-background">
       <WorkerSidebar />
-      <main className="flex-1 ml-64 p-8">
+      <main className="flex-1 ml-64 p-6">
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Cari Pekerjaan</h1>
-            <p className="text-gray-400">Temukan peluang kerja yang sesuai dengan keahlian Anda</p>
+            <h1 className="text-3xl font-bold mb-2 text-foreground">Cari Pekerjaan</h1>
+            <p className="text-muted-foreground">Temukan peluang kerja yang sesuai dengan keahlian Anda</p>
           </div>
 
           {/* Search and Filters */}
           <div className="mb-8 space-y-4">
             <div className="flex gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="Cari pekerjaan, perusahaan, atau skill..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-black border border-gray-700 text-white"
+                  className="pl-10"
                 />
               </div>
               <Select value={locationFilter} onValueChange={setLocationFilter}>
-                <SelectTrigger className="w-48 bg-black border border-gray-700 text-white">
+                <SelectTrigger className="w-48">
                   <SelectValue placeholder="Lokasi" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-900 text-white">
+                <SelectContent>
                   <SelectItem value="all">Semua Lokasi</SelectItem>
                   <SelectItem value="India">India</SelectItem>
                   <SelectItem value="USA">USA</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-48 bg-black border border-gray-700 text-white">
+                <SelectTrigger className="w-48">
                   <SelectValue placeholder="Tipe Pekerjaan" />
                 </SelectTrigger>
-                <SelectContent className="bg-gray-900 text-white">
+                <SelectContent>
                   <SelectItem value="all">Semua Tipe</SelectItem>
                   <SelectItem value="full-time">Full-time</SelectItem>
                   <SelectItem value="part-time">Part-time</SelectItem>
@@ -200,10 +200,10 @@ export default function WorkerJobsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredJobs.map((job) => (
-              <Card key={job.id} className="p-6 hover:shadow-lg transition-shadow bg-black border border-gray-800">
+              <Card key={job.id} className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-lg font-semibold text-white">{job.title}</h3>
-                  <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-300">
+                  <h3 className="text-lg font-semibold text-foreground">{job.title}</h3>
+                  <Button variant="ghost" size="sm">
                     <Bookmark className="h-5 w-5" />
                   </Button>
                 </div>
@@ -211,11 +211,11 @@ export default function WorkerJobsPage() {
                 <div className="mb-4">
                   <Badge
                     variant="secondary"
-                    className="text-xs font-medium px-3 py-1 rounded-full bg-blue-600 text-white"
+                    className="text-xs font-medium px-3 py-1 rounded-full bg-primary text-primary-foreground"
                   >
                     {job.type}
                   </Badge>
-                  <span className="ml-2 text-sm text-gray-400">Salary: {job.salary}</span>
+                  <span className="ml-2 text-sm text-muted-foreground">Salary: {job.salary}</span>
                 </div>
 
                 <div className="flex items-center gap-3 mb-4">
@@ -229,8 +229,8 @@ export default function WorkerJobsPage() {
                     />
                   </div>
                   <div>
-                    <p className="font-medium text-white">{job.company}</p>
-                    <div className="flex items-center gap-1 text-sm text-gray-400">
+                    <p className="font-medium text-foreground">{job.company}</p>
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <MapPin className="h-3 w-3" />
                       {job.location}
                     </div>
@@ -240,7 +240,7 @@ export default function WorkerJobsPage() {
                 <div className="flex items-center gap-2 mb-6">
                   <div className="flex -space-x-2">
                     {job.applicantAvatars.map((avatar, index) => (
-                      <div key={index} className="w-6 h-6 rounded-full bg-gray-600 border-2 border-gray-900">
+                      <div key={index} className="w-6 h-6 rounded-full bg-muted border-2 border-background">
                         <Image
                           src={avatar || "/placeholder.svg"}
                           alt="Applicant"
@@ -251,17 +251,14 @@ export default function WorkerJobsPage() {
                       </div>
                     ))}
                   </div>
-                  <span className="text-sm text-gray-400">{job.applicants}</span>
+                  <span className="text-sm text-muted-foreground">{job.applicants}</span>
                 </div>
 
                 <div className="flex gap-2">
-                  <Button
-                    className="flex-1 bg-black border border-gray-700 text-white hover:bg-gray-900"
-                    onClick={() => handleViewDetails(job.id)}
-                  >
+                  <Button variant="outline" className="flex-1 bg-transparent" onClick={() => handleViewDetails(job.id)}>
                     View details
                   </Button>
-                  <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">Apply now</Button>
+                  <Button className="flex-1">Apply now</Button>
                 </div>
               </Card>
             ))}
@@ -269,9 +266,9 @@ export default function WorkerJobsPage() {
 
           {filteredJobs.length === 0 && (
             <div className="text-center py-12">
-              <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">Tidak ada pekerjaan ditemukan</h3>
-              <p className="text-gray-400">Coba ubah filter pencarian Anda</p>
+              <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2 text-foreground">Tidak ada pekerjaan ditemukan</h3>
+              <p className="text-muted-foreground">Coba ubah filter pencarian Anda</p>
             </div>
           )}
         </div>

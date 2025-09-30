@@ -4,76 +4,78 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated theme colors for Kerjoo! brand - professional dark theme with blue accents */
-  --background: oklch(0.98 0.005 240);
-  --foreground: oklch(0.15 0.02 240);
+  /* Updated theme colors to match Jobie interface - light theme with purple accents */
+  --background: oklch(0.98 0.005 280);
+  --foreground: oklch(0.15 0.02 280);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.02 240);
+  --card-foreground: oklch(0.15 0.02 280);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.02 240);
-  --primary: oklch(0.55 0.18 240);
-  --primary-foreground: oklch(0.98 0.005 240);
-  --secondary: oklch(0.96 0.01 240);
-  --secondary-foreground: oklch(0.15 0.02 240);
-  --muted: oklch(0.96 0.01 240);
-  --muted-foreground: oklch(0.45 0.02 240);
-  --accent: oklch(0.94 0.02 240);
-  --accent-foreground: oklch(0.15 0.02 240);
+  --popover-foreground: oklch(0.15 0.02 280);
+  --primary: oklch(0.55 0.18 280);
+  --primary-foreground: oklch(0.98 0.005 280);
+  --secondary: oklch(0.96 0.01 280);
+  --secondary-foreground: oklch(0.15 0.02 280);
+  --muted: oklch(0.96 0.01 280);
+  --muted-foreground: oklch(0.45 0.02 280);
+  --accent: oklch(0.94 0.02 280);
+  --accent-foreground: oklch(0.15 0.02 280);
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.98 0.005 240);
-  --border: oklch(0.92 0.01 240);
-  --input: oklch(0.92 0.01 240);
-  --ring: oklch(0.55 0.18 240);
-  --chart-1: oklch(0.55 0.18 240);
-  --chart-2: oklch(0.65 0.15 200);
-  --chart-3: oklch(0.45 0.12 280);
-  --chart-4: oklch(0.75 0.12 160);
-  --chart-5: oklch(0.85 0.08 120);
+  --destructive-foreground: oklch(0.98 0.005 280);
+  /* Made border more visible with darker color and increased contrast */
+  --border: oklch(0.85 0.02 280);
+  --input: oklch(0.88 0.02 280);
+  --ring: oklch(0.55 0.18 280);
+  --chart-1: oklch(0.55 0.18 280);
+  --chart-2: oklch(0.65 0.15 320);
+  --chart-3: oklch(0.45 0.12 240);
+  --chart-4: oklch(0.75 0.12 200);
+  --chart-5: oklch(0.85 0.08 160);
   --radius: 0.75rem;
-  --sidebar: oklch(0.98 0.005 240);
-  --sidebar-foreground: oklch(0.15 0.02 240);
-  --sidebar-primary: oklch(0.55 0.18 240);
-  --sidebar-primary-foreground: oklch(0.98 0.005 240);
-  --sidebar-accent: oklch(0.96 0.01 240);
-  --sidebar-accent-foreground: oklch(0.15 0.02 240);
-  --sidebar-border: oklch(0.92 0.01 240);
-  --sidebar-ring: oklch(0.55 0.18 240);
+  --sidebar: oklch(0.98 0.005 280);
+  --sidebar-foreground: oklch(0.15 0.02 280);
+  --sidebar-primary: oklch(0.55 0.18 280);
+  --sidebar-primary-foreground: oklch(0.98 0.005 280);
+  --sidebar-accent: oklch(0.96 0.01 280);
+  --sidebar-accent-foreground: oklch(0.15 0.02 280);
+  --sidebar-border: oklch(0.92 0.01 280);
+  --sidebar-ring: oklch(0.55 0.18 280);
 }
 
 .dark {
-  /* Dark theme colors for professional look */
-  --background: oklch(0.08 0.01 240);
-  --foreground: oklch(0.95 0.005 240);
-  --card: oklch(0.12 0.01 240);
-  --card-foreground: oklch(0.95 0.005 240);
-  --popover: oklch(0.12 0.01 240);
-  --popover-foreground: oklch(0.95 0.005 240);
-  --primary: oklch(0.65 0.2 240);
-  --primary-foreground: oklch(0.08 0.01 240);
-  --secondary: oklch(0.18 0.01 240);
-  --secondary-foreground: oklch(0.95 0.005 240);
-  --muted: oklch(0.18 0.01 240);
-  --muted-foreground: oklch(0.65 0.01 240);
-  --accent: oklch(0.22 0.02 240);
-  --accent-foreground: oklch(0.95 0.005 240);
-  --destructive: oklch(0.55 0.2 15);
-  --destructive-foreground: oklch(0.95 0.005 240);
-  --border: oklch(0.22 0.02 240);
-  --input: oklch(0.22 0.02 240);
-  --ring: oklch(0.65 0.2 240);
-  --chart-1: oklch(0.65 0.2 240);
-  --chart-2: oklch(0.75 0.15 200);
-  --chart-3: oklch(0.55 0.12 280);
-  --chart-4: oklch(0.85 0.12 160);
-  --chart-5: oklch(0.95 0.08 120);
-  --sidebar: oklch(0.12 0.01 240);
-  --sidebar-foreground: oklch(0.95 0.005 240);
-  --sidebar-primary: oklch(0.65 0.2 240);
-  --sidebar-primary-foreground: oklch(0.08 0.01 240);
-  --sidebar-accent: oklch(0.18 0.01 240);
-  --sidebar-accent-foreground: oklch(0.95 0.005 240);
-  --sidebar-border: oklch(0.22 0.02 240);
-  --sidebar-ring: oklch(0.65 0.2 240);
+  /* Updated to modern dark theme with exact hex colors provided */
+  --background: #0f1115; /* Background: #0F1115 */
+  --foreground: #ffffff; /* Primary Text: #FFFFFF */
+  --card: #1a1d23; /* Card Background: #1A1D23 */
+  --card-foreground: #ffffff; /* Primary Text: #FFFFFF */
+  --popover: #1a1d23; /* Card Background: #1A1D23 */
+  --popover-foreground: #ffffff; /* Primary Text: #FFFFFF */
+  --primary: #7c3aed; /* Accent (Primary Action, Highlights): #7C3AED */
+  --primary-foreground: #ffffff; /* Primary Text: #FFFFFF */
+  --secondary: #2c2f36; /* Border/Divider: #2C2F36 */
+  --secondary-foreground: #ffffff; /* Primary Text: #FFFFFF */
+  --muted: #2c2f36; /* Border/Divider: #2C2F36 */
+  --muted-foreground: #a0a3a9; /* Secondary Text: #A0A3A9 */
+  --accent: #1a1d23; /* Card Background: #1A1D23 */
+  --accent-foreground: #ffffff; /* Primary Text: #FFFFFF */
+  --destructive: #ef4444; /* Error: #EF4444 */
+  --destructive-foreground: #ffffff; /* Primary Text: #FFFFFF */
+  /* Made dark mode borders more visible with lighter colors */
+  --border: #3a3d44; /* Lighter than original #2C2F36 for better visibility */
+  --input: #2c2f36; /* Border/Divider: #2C2F36 */
+  --ring: #7c3aed; /* Accent (Primary Action, Highlights): #7C3AED */
+  --chart-1: #7c3aed; /* Accent (Primary Action, Highlights): #7C3AED */
+  --chart-2: #9f67f6; /* Accent Hover: #9F67F6 */
+  --chart-3: #22c55e; /* Success/Positive: #22C55E */
+  --chart-4: #eab308; /* Warning: #EAB308 */
+  --chart-5: #ef4444; /* Error: #EF4444 */
+  --sidebar: #1a1d23; /* Card Background: #1A1D23 */
+  --sidebar-foreground: #ffffff; /* Primary Text: #FFFFFF */
+  --sidebar-primary: #7c3aed; /* Accent (Primary Action, Highlights): #7C3AED */
+  --sidebar-primary-foreground: #ffffff; /* Primary Text: #FFFFFF */
+  --sidebar-accent: #2c2f36; /* Border/Divider: #2C2F36 */
+  --sidebar-accent-foreground: #a0a3a9; /* Secondary Text: #A0A3A9 */
+  --sidebar-border: #2c2f36; /* Border/Divider: #2C2F36 */
+  --sidebar-ring: #7c3aed; /* Accent (Primary Action, Highlights): #7C3AED */
 }
 
 @theme inline {
@@ -95,14 +97,10 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  /* Added border and input color definitions for Tailwind */
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -119,7 +117,8 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    /* Changed outline color from ring/50 to a darker gray to match the dark theme */
+    @apply outline-[#1f2937]/50;
   }
   body {
     @apply bg-background text-foreground;

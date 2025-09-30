@@ -178,7 +178,7 @@ export function WorkerDashboard() {
                 {recentProjects.map((project) => (
                   <div
                     key={project.id}
-                    className="flex items-center justify-between p-4 border border-border rounded-lg"
+                    className="flex items-center justify-between p-4 border-2 border-[#1f2937] rounded-lg"
                   >
                     <div className="flex-1">
                       <h4 className="font-medium">{project.title}</h4>
@@ -214,7 +214,7 @@ export function WorkerDashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {recommendedProjects.map((project) => (
-                  <div key={project.id} className="p-4 border border-border rounded-lg">
+                  <div key={project.id} className="p-4 border-2 border-[#1f2937] rounded-lg">
                     <div className="flex items-start justify-between mb-2">
                       <h4 className="font-medium">{project.title}</h4>
                       <Badge variant="secondary">{project.matchScore}% Match</Badge>
