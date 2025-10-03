@@ -2,6 +2,7 @@
 
 import type React from "react"
 
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,66 +10,57 @@ import { Label } from "@/components/ui/label"
 import { Zap } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    const supabase = createClient()
     setIsLoading(true)
+    setError(null)
 
-    console.log("[v0] Login attempt with email:", email)
+    try {
+      console.log("[v0] Starting login process...")
 
-    const demoCredentials = {
-      "worker@demo.com": { role: "worker", name: "Pekerja Demo" },
-      "hr@company.com": { role: "company", name: "HR Manager" },
-    }
-
-    // Check if email matches demo credentials
-    if (!demoCredentials[email as keyof typeof demoCredentials]) {
-      alert("Gunakan demo credentials: worker@demo.com atau hr@company.com")
-      setIsLoading(false)
-      return
-    }
-
-    // Simulate authentication
-    setTimeout(() => {
-      const userConfig = demoCredentials[email as keyof typeof demoCredentials]
-      const mockUser = {
-        id: Date.now(),
-        name: userConfig.name,
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        role: userConfig.role,
-        avatar: "/professional-indonesian-man.jpg",
+        password,
+      })
+
+      if (error) {
+        console.log("[v0] Login error:", error)
+        throw error
       }
 
-      console.log("[v0] User created:", mockUser)
+      console.log("[v0] Login successful, user:", data.user.id)
 
-      try {
-        const userDataString = JSON.stringify(mockUser)
-        localStorage.setItem("kerjoo_user", userDataString)
-        localStorage.setItem("kerjoo_auth", "true")
-        sessionStorage.setItem("kerjoo_user", userDataString)
-        sessionStorage.setItem("kerjoo_auth", "true")
+      // Get user profile to determine redirect
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("user_type")
+        .eq("id", data.user.id)
+        .single()
 
-        console.log("[v0] User stored successfully")
-
-        if (mockUser.role === "company") {
-          console.log("[v0] Redirecting to company dashboard")
-          window.location.href = "/dashboard/company"
-        } else {
-          console.log("[v0] Redirecting to worker dashboard")
-          window.location.href = "/dashboard/worker"
-        }
-      } catch (error) {
-        console.error("[v0] Error storing user data:", error)
-        setIsLoading(false)
+      if (profileError) {
+        console.log("[v0] Profile fetch error:", profileError)
+        throw new Error("Gagal mengambil data profil. Silakan coba lagi.")
       }
-    }, 1000)
+
+      console.log("[v0] Profile fetched:", profile)
+
+      const redirectUrl = profile?.user_type === "company" ? "/dashboard/company" : "/dashboard/worker"
+
+      console.log("[v0] Redirecting to:", redirectUrl)
+      window.location.href = redirectUrl
+    } catch (error: unknown) {
+      console.log("[v0] Error caught:", error)
+      setError(error instanceof Error ? error.message : "Terjadi kesalahan saat login")
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -112,26 +104,17 @@ export default function LoginPage() {
                   required
                 />
               </div>
+              {error && (
+                <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">{error}</div>
+              )}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Memproses..." : "Masuk"}
               </Button>
               <div className="text-center text-sm text-muted-foreground">
                 Belum punya akun?{" "}
-                <Link href="/register" className="text-primary hover:underline">
+                <Link href="/signup" className="text-primary hover:underline">
                   Daftar sekarang
                 </Link>
-              </div>
-              <div className="text-xs text-muted-foreground bg-muted p-3 rounded-md">
-                <p className="font-medium mb-1">Demo Credentials:</p>
-                <p>
-                  <strong>Pekerja:</strong> worker@demo.com
-                </p>
-                <p>
-                  <strong>HRD:</strong> hr@company.com
-                </p>
-                <p>
-                  <strong>Password:</strong> apapun
-                </p>
               </div>
             </form>
           </CardContent>
