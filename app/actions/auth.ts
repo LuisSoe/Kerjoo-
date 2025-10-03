@@ -70,19 +70,36 @@ export async function registerUser(formData: FormData) {
     if (role === "worker") {
       console.log("[v0] Creating worker profile...")
       const [workerProfile] = await sql`
-        INSERT INTO worker_profiles (user_id, location)
-        VALUES (${user.id}, 'Jakarta')
+        INSERT INTO worker_profiles (
+          user_id, 
+          location, 
+          level, 
+          availability_status,
+          skill_points,
+          completed_projects_count,
+          total_earnings,
+          hourly_rate
+        )
+        VALUES (
+          ${user.id}, 
+          'Jakarta', 
+          'beginner',
+          'available',
+          0,
+          0,
+          0,
+          50000
+        )
         RETURNING id
       `
-      console.log("[v0] Worker profile created:", workerProfile.id)
+      console.log("[v0] Worker profile created with id:", workerProfile.id)
 
-      // Create wallet for worker
-      console.log("[v0] Creating wallet...")
+      console.log("[v0] Creating wallet for worker_id:", workerProfile.id)
       await sql`
         INSERT INTO wallets (worker_id, total_balance, available_balance, pending_balance)
         VALUES (${workerProfile.id}, 0, 0, 0)
       `
-      console.log("[v0] Wallet created")
+      console.log("[v0] Wallet created successfully")
     } else {
       console.log("[v0] Creating company profile...")
       await sql`
@@ -117,28 +134,38 @@ export async function registerUser(formData: FormData) {
 
 export async function loginUser(formData: FormData) {
   try {
+    console.log("[v0] Starting login process...")
+
     const email = formData.get("email") as string
     const password = formData.get("password") as string
 
-    const [user] = await sql`
+    console.log("[v0] Attempting login for email:", email)
+
+    const users = await sql`
       SELECT * FROM users WHERE email = ${email}
     `
 
-    if (!user) {
+    if (!users || users.length === 0) {
+      console.log("[v0] User not found")
       return { success: false, error: "Email atau password salah" }
     }
+
+    const user = users[0]
+    console.log("[v0] User found:", user.id)
 
     const isValid = await verifyPassword(password, user.password_hash)
     if (!isValid) {
+      console.log("[v0] Invalid password")
       return { success: false, error: "Email atau password salah" }
     }
 
-    // Update last login
+    console.log("[v0] Password verified, updating last login...")
+
     await sql`
       UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ${user.id}
     `
 
-    // Set session cookie
+    console.log("[v0] Setting session cookie...")
     const cookieStore = await cookies()
     cookieStore.set("kerjoo_user_id", user.id.toString(), {
       httpOnly: true,
@@ -147,12 +174,17 @@ export async function loginUser(formData: FormData) {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     })
 
-    // Return user without password
     const { password_hash, ...userWithoutPassword } = user
+    console.log("[v0] Login successful!")
     return { success: true, user: userWithoutPassword }
   } catch (error) {
     console.error("[v0] Login error:", error)
-    return { success: false, error: "Terjadi kesalahan saat login" }
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
+    console.error("[v0] Error details:", errorMessage)
+    return {
+      success: false,
+      error: `Terjadi kesalahan saat login: ${errorMessage}`,
+    }
   }
 }
 
@@ -174,7 +206,6 @@ export async function getCurrentUser() {
       return null
     }
 
-    // Get profile based on role
     let profile = null
     if (user.role === "worker") {
       const [workerProfile] = await sql`
