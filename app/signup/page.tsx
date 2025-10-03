@@ -10,8 +10,10 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function SignUpPage() {
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [fullName, setFullName] = useState("")
@@ -28,6 +30,8 @@ export default function SignUpPage() {
 
     try {
       console.log("[v0] Starting signup process...")
+      console.log("[v0] Email:", email)
+      console.log("[v0] User type:", userType)
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -48,8 +52,9 @@ export default function SignUpPage() {
       }
 
       console.log("[v0] Signup successful:", data)
+      console.log("[v0] Redirecting to signup-success page...")
 
-      window.location.href = "/signup-success"
+      router.push("/signup-success")
     } catch (error: unknown) {
       console.log("[v0] Error caught:", error)
       setError(error instanceof Error ? error.message : "Terjadi kesalahan saat mendaftar")
@@ -88,6 +93,7 @@ export default function SignUpPage() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
                 {userType === "company" && (
@@ -99,6 +105,7 @@ export default function SignUpPage() {
                       required
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
+                      disabled={isLoading}
                     />
                   </div>
                 )}
@@ -111,6 +118,7 @@ export default function SignUpPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -122,6 +130,7 @@ export default function SignUpPage() {
                     minLength={6}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={isLoading}
                   />
                   <p className="text-xs text-muted-foreground">Minimal 6 karakter</p>
                 </div>
