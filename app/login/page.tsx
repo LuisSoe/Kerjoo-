@@ -10,65 +10,43 @@ import { Zap } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { loginUser } from "@/app/actions/auth"
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const router = useRouter()
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
+    setError("")
 
-    console.log("[v0] Login attempt with email:", email)
+    const formData = new FormData(e.currentTarget)
 
-    const demoCredentials = {
-      "worker@demo.com": { role: "worker", name: "Pekerja Demo" },
-      "hr@company.com": { role: "company", name: "HR Manager" },
-    }
+    try {
+      const result = await loginUser(formData)
 
-    // Check if email matches demo credentials
-    if (!demoCredentials[email as keyof typeof demoCredentials]) {
-      alert("Gunakan demo credentials: worker@demo.com atau hr@company.com")
-      setIsLoading(false)
-      return
-    }
-
-    // Simulate authentication
-    setTimeout(() => {
-      const userConfig = demoCredentials[email as keyof typeof demoCredentials]
-      const mockUser = {
-        id: Date.now(),
-        name: userConfig.name,
-        email,
-        role: userConfig.role,
-        avatar: "/professional-indonesian-man.jpg",
-      }
-
-      console.log("[v0] User created:", mockUser)
-
-      try {
-        const userDataString = JSON.stringify(mockUser)
-        localStorage.setItem("kerjoo_user", userDataString)
+      if (result.success && result.user) {
+        // Store user in localStorage for client-side access
+        localStorage.setItem("kerjoo_user", JSON.stringify(result.user))
         localStorage.setItem("kerjoo_auth", "true")
-        sessionStorage.setItem("kerjoo_user", userDataString)
-        sessionStorage.setItem("kerjoo_auth", "true")
 
-        console.log("[v0] User stored successfully")
-
-        if (mockUser.role === "company") {
-          console.log("[v0] Redirecting to company dashboard")
-          window.location.href = "/dashboard/company"
+        // Redirect based on role
+        if (result.user.role === "company") {
+          router.push("/dashboard/company")
         } else {
-          console.log("[v0] Redirecting to worker dashboard")
-          window.location.href = "/dashboard/worker"
+          router.push("/dashboard/worker")
         }
-      } catch (error) {
-        console.error("[v0] Error storing user data:", error)
-        setIsLoading(false)
+      } else {
+        setError(result.error || "Login gagal")
       }
-    }, 1000)
+    } catch (err) {
+      console.error("[v0] Login error:", err)
+      setError("Terjadi kesalahan saat login")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -91,26 +69,14 @@ export default function LoginPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
+              {error && <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">{error}</div>}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="nama@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+                <Input id="email" name="email" type="email" placeholder="nama@email.com" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <Input id="password" name="password" type="password" required />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Memproses..." : "Masuk"}
@@ -120,18 +86,6 @@ export default function LoginPage() {
                 <Link href="/register" className="text-primary hover:underline">
                   Daftar sekarang
                 </Link>
-              </div>
-              <div className="text-xs text-muted-foreground bg-muted p-3 rounded-md">
-                <p className="font-medium mb-1">Demo Credentials:</p>
-                <p>
-                  <strong>Pekerja:</strong> worker@demo.com
-                </p>
-                <p>
-                  <strong>HRD:</strong> hr@company.com
-                </p>
-                <p>
-                  <strong>Password:</strong> apapun
-                </p>
               </div>
             </form>
           </CardContent>

@@ -11,74 +11,60 @@ import { Zap } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { registerUser } from "@/app/actions/auth"
 
 export default function RegisterPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    role: "",
-    password: "",
-    confirmPassword: "",
-  })
+  const [role, setRole] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
   const router = useRouter()
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    console.log("[v0] Registration attempt with data:", formData)
-
-    if (formData.password !== formData.confirmPassword) {
-      alert("Password tidak cocok!")
-      return
-    }
-
-    if (!formData.role) {
-      alert("Silakan pilih peran Anda!")
-      return
-    }
-
     setIsLoading(true)
+    setError("")
 
-    // Simulate registration - in real app, this would call an API
-    setTimeout(() => {
-      // Mock user data
-      const newUser = {
-        id: Date.now(),
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        role: formData.role,
-        avatar: "/professional-indonesian-man.jpg",
-      }
+    const formData = new FormData(e.currentTarget)
+    const password = formData.get("password") as string
+    const confirmPassword = formData.get("confirmPassword") as string
 
-      console.log("[v0] New user created:", newUser)
+    if (password !== confirmPassword) {
+      setError("Password tidak cocok!")
+      setIsLoading(false)
+      return
+    }
 
-      try {
-        localStorage.setItem("kerjoo_user", JSON.stringify(newUser))
+    if (!role) {
+      setError("Silakan pilih peran Anda!")
+      setIsLoading(false)
+      return
+    }
+
+    formData.set("role", role)
+
+    try {
+      const result = await registerUser(formData)
+
+      if (result.success && result.user) {
+        // Store user in localStorage for client-side access
+        localStorage.setItem("kerjoo_user", JSON.stringify(result.user))
         localStorage.setItem("kerjoo_auth", "true")
-        console.log("[v0] User stored in localStorage successfully")
-      } catch (error) {
-        console.error("[v0] Error storing user data:", error)
-      }
 
-      setTimeout(() => {
         // Redirect based on role
-        if (formData.role === "company") {
-          console.log("[v0] Redirecting to company dashboard")
+        if (result.user.role === "company") {
           router.push("/dashboard/company")
         } else {
-          console.log("[v0] Redirecting to worker dashboard")
           router.push("/dashboard/worker")
         }
-        setIsLoading(false)
-      }, 100)
-    }, 1000)
-  }
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+      } else {
+        setError(result.error || "Registrasi gagal")
+      }
+    } catch (err) {
+      console.error("[v0] Registration error:", err)
+      setError("Terjadi kesalahan saat mendaftar")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -101,40 +87,22 @@ export default function RegisterPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleRegister} className="space-y-4">
+              {error && <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">{error}</div>}
               <div className="space-y-2">
                 <Label htmlFor="name">Nama Lengkap</Label>
-                <Input
-                  id="name"
-                  placeholder="Nama lengkap Anda"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                  required
-                />
+                <Input id="name" name="name" placeholder="Nama lengkap Anda" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="nama@email.com"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  required
-                />
+                <Input id="email" name="email" type="email" placeholder="nama@email.com" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Nomor Telepon</Label>
-                <Input
-                  id="phone"
-                  placeholder="08123456789"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange("phone", e.target.value)}
-                  required
-                />
+                <Input id="phone" name="phone" placeholder="08123456789" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">Daftar Sebagai</Label>
-                <Select value={formData.role} onValueChange={(value) => handleInputChange("role", value)}>
+                <Select value={role} onValueChange={setRole}>
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih peran Anda" />
                   </SelectTrigger>
@@ -144,25 +112,19 @@ export default function RegisterPage() {
                   </SelectContent>
                 </Select>
               </div>
+              {role === "company" && (
+                <div className="space-y-2">
+                  <Label htmlFor="companyName">Nama Perusahaan</Label>
+                  <Input id="companyName" name="companyName" placeholder="PT. Nama Perusahaan" />
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => handleInputChange("password", e.target.value)}
-                  required
-                />
+                <Input id="password" name="password" type="password" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">Konfirmasi Password</Label>
-                <Input
-                  id="confirm-password"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                  required
-                />
+                <Input id="confirm-password" name="confirmPassword" type="password" required />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Memproses..." : "Daftar Sekarang"}
