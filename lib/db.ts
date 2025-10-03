@@ -2,6 +2,27 @@ import { neon } from "@neondatabase/serverless"
 
 export const sql = neon(process.env.DATABASE_URL!)
 
+export async function testDatabaseConnection() {
+  try {
+    if (!process.env.DATABASE_URL) {
+      return {
+        success: false,
+        error: "DATABASE_URL environment variable is not set",
+      }
+    }
+
+    // Simple query to test connection
+    await sql`SELECT 1 as test`
+    return { success: true }
+  } catch (error) {
+    console.error("[v0] Database connection test failed:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown database error",
+    }
+  }
+}
+
 export function handleDbError(error: unknown): never {
   console.error("[v0] Database error:", error)
   throw new Error("Database operation failed")

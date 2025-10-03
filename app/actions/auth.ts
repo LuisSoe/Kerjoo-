@@ -1,6 +1,6 @@
 "use server"
 
-import { sql } from "@/lib/db"
+import { sql, testDatabaseConnection } from "@/lib/db"
 import { cookies } from "next/headers"
 
 // Simple password hashing (in production, use bcrypt)
@@ -21,6 +21,18 @@ async function verifyPassword(password: string, hash: string): Promise<boolean> 
 
 export async function registerUser(formData: FormData) {
   try {
+    console.log("[v0] Starting registration process...")
+
+    // Test database connection first
+    const dbTest = await testDatabaseConnection()
+    if (!dbTest.success) {
+      console.error("[v0] Database connection test failed:", dbTest.error)
+      return {
+        success: false,
+        error: "Koneksi database gagal. Pastikan DATABASE_URL sudah diatur di Vercel.",
+      }
+    }
+
     const name = formData.get("name") as string
     const email = formData.get("email") as string
     const phone = formData.get("phone") as string
@@ -28,46 +40,60 @@ export async function registerUser(formData: FormData) {
     const role = formData.get("role") as "worker" | "company"
     const companyName = formData.get("companyName") as string | null
 
+    console.log("[v0] Registration data:", { name, email, phone, role, companyName })
+
     // Check if user exists
+    console.log("[v0] Checking if user exists...")
     const existingUser = await sql`
       SELECT id FROM users WHERE email = ${email}
     `
 
     if (existingUser.length > 0) {
+      console.log("[v0] User already exists")
       return { success: false, error: "Email sudah terdaftar" }
     }
 
     // Hash password
+    console.log("[v0] Hashing password...")
     const passwordHash = await hashPassword(password)
 
     // Insert user
+    console.log("[v0] Inserting user into database...")
     const [user] = await sql`
       INSERT INTO users (name, email, phone, password_hash, role, avatar_url)
       VALUES (${name}, ${email}, ${phone}, ${passwordHash}, ${role}, '/professional-indonesian-man.jpg')
       RETURNING id, name, email, phone, role, avatar_url, created_at
     `
+    console.log("[v0] User created:", user.id)
 
     // Create profile based on role
     if (role === "worker") {
+      console.log("[v0] Creating worker profile...")
       const [workerProfile] = await sql`
         INSERT INTO worker_profiles (user_id, location, level, skill_points, availability_status, hourly_rate)
         VALUES (${user.id}, 'Jakarta', 'beginner', 0, 'available', 50000)
         RETURNING id
       `
+      console.log("[v0] Worker profile created:", workerProfile.id)
 
       // Create wallet for worker
+      console.log("[v0] Creating wallet...")
       await sql`
         INSERT INTO wallets (worker_id, total_balance, available_balance, pending_balance)
         VALUES (${workerProfile.id}, 0, 0, 0)
       `
+      console.log("[v0] Wallet created")
     } else {
+      console.log("[v0] Creating company profile...")
       await sql`
         INSERT INTO company_profiles (user_id, company_name, verified)
         VALUES (${user.id}, ${companyName || name}, false)
       `
+      console.log("[v0] Company profile created")
     }
 
     // Set session cookie
+    console.log("[v0] Setting session cookie...")
     const cookieStore = await cookies()
     cookieStore.set("kerjoo_user_id", user.id.toString(), {
       httpOnly: true,
@@ -76,10 +102,16 @@ export async function registerUser(formData: FormData) {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     })
 
+    console.log("[v0] Registration successful!")
     return { success: true, user }
   } catch (error) {
     console.error("[v0] Registration error:", error)
-    return { success: false, error: "Terjadi kesalahan saat mendaftar" }
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
+    console.error("[v0] Error details:", errorMessage)
+    return {
+      success: false,
+      error: `Terjadi kesalahan saat mendaftar: ${errorMessage}`,
+    }
   }
 }
 

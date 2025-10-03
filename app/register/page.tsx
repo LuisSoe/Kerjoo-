@@ -43,7 +43,9 @@ export default function RegisterPage() {
     formData.set("role", role)
 
     try {
+      console.log("[v0] Submitting registration form...")
       const result = await registerUser(formData)
+      console.log("[v0] Registration result:", result)
 
       if (result.success && result.user) {
         // Store user in localStorage for client-side access
