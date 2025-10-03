@@ -135,6 +135,12 @@ export default function WorkerProjects() {
                 Semua
               </Button>
               <Button
+                variant={statusFilter === "pending" ? "default" : "outline"}
+                onClick={() => setStatusFilter("pending")}
+              >
+                Menunggu
+              </Button>
+              <Button
                 variant={statusFilter === "in-progress" ? "default" : "outline"}
                 onClick={() => setStatusFilter("in-progress")}
               >
@@ -196,7 +202,11 @@ export default function WorkerProjects() {
                     </div>
                   </div>
 
-                  <Button className="w-full bg-transparent mt-auto" variant="outline">
+                  <Button
+                    className="w-full bg-transparent mt-auto"
+                    variant="outline"
+                    onClick={() => router.push(`/dashboard/worker/projects/${project.id}`)}
+                  >
                     Lihat Detail
                   </Button>
                 </CardContent>

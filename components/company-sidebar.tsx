@@ -17,6 +17,7 @@ import {
   Zap,
   Bell,
   Sparkles,
+  User,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -26,7 +27,8 @@ const navigation = [
   { name: "Proyek", href: "/dashboard/company/projects", icon: Briefcase },
   { name: "AI Recommendations", href: "/dashboard/company/recommendations", icon: Sparkles },
   { name: "Analytics", href: "/dashboard/company/analytics", icon: TrendingUp },
-  { name: "Pesan", href: "/dashboard/company/messages", icon: MessageSquare },
+  { name: "Messages", href: "/dashboard/company/messages", icon: MessageSquare },
+  { name: "Profil", href: "/dashboard/company/profile", icon: User },
   { name: "Pengaturan", href: "/dashboard/company/settings", icon: Settings },
 ]
 
@@ -36,11 +38,9 @@ export function CompanySidebar() {
   const router = useRouter()
 
   const handleLogout = () => {
-    localStorage.removeItem("kerjoo_user")
-    localStorage.removeItem("kerjoo_auth")
-    sessionStorage.removeItem("kerjoo_user")
-    sessionStorage.removeItem("kerjoo_auth")
-    router.push("/")
+    localStorage.clear()
+    sessionStorage.clear()
+    window.location.href = "/"
   }
 
   return (
@@ -57,21 +57,25 @@ export function CompanySidebar() {
         {/* Company Info */}
         <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage src="/placeholder.svg?key=company" />
-              <AvatarFallback>DN</AvatarFallback>
-            </Avatar>
+            <Link href="/dashboard/company/profile" className="cursor-pointer">
+              <Avatar>
+                <AvatarImage src="/placeholder.svg?key=company" />
+                <AvatarFallback>DN</AvatarFallback>
+              </Avatar>
+            </Link>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">PT Digital Nusantara</p>
               <p className="text-xs text-muted-foreground">Premium Account</p>
             </div>
-            <Button variant="ghost" size="sm" className="relative">
-              <Bell className="w-4 h-4" />
-              {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
-                  {notifications}
-                </span>
-              )}
+            <Button variant="ghost" size="sm" className="relative" asChild>
+              <Link href="/dashboard/company/notifications">
+                <Bell className="w-4 h-4" />
+                {notifications > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                    {notifications}
+                  </span>
+                )}
+              </Link>
             </Button>
           </div>
         </div>

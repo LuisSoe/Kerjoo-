@@ -138,6 +138,10 @@ export default function WorkerJobsPage() {
     router.push(`/dashboard/worker/jobs/${jobId}`)
   }
 
+  const handleApply = (jobId: number) => {
+    router.push(`/dashboard/worker/jobs/${jobId}/apply`)
+  }
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -258,7 +262,9 @@ export default function WorkerJobsPage() {
                   <Button variant="outline" className="flex-1 bg-transparent" onClick={() => handleViewDetails(job.id)}>
                     View details
                   </Button>
-                  <Button className="flex-1">Apply now</Button>
+                  <Button className="flex-1" onClick={() => handleApply(job.id)}>
+                    Apply now
+                  </Button>
                 </div>
               </Card>
             ))}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { WorkerSidebar } from "@/components/worker-sidebar"
 import { Search, Send, Paperclip, MoreVertical, Phone, Video } from "lucide-react"
 
-const conversations = [
+const initialConversations = [
   {
     id: 1,
     name: "PT Digital Nusantara",
@@ -52,50 +52,90 @@ const conversations = [
   },
 ]
 
-const currentMessages = [
-  {
-    id: 1,
-    sender: "PT Digital Nusantara",
-    message: "Halo Ahmad, bagaimana progress untuk mockup halaman utama?",
-    timestamp: "14:30",
-    isOwn: false,
-  },
-  {
-    id: 2,
-    sender: "You",
-    message: "Halo! Mockup sudah 90% selesai. Saya sedang finalisasi beberapa detail di section hero.",
-    timestamp: "14:32",
-    isOwn: true,
-  },
-  {
-    id: 3,
-    sender: "You",
-    message: "Estimasi akan selesai dalam 2 jam lagi. Bisa saya kirim untuk review?",
-    timestamp: "14:32",
-    isOwn: true,
-  },
-  {
-    id: 4,
-    sender: "PT Digital Nusantara",
-    message: "Perfect! Silakan kirim begitu sudah ready. Saya akan review dan berikan feedback.",
-    timestamp: "14:35",
-    isOwn: false,
-  },
-  {
-    id: 5,
-    sender: "PT Digital Nusantara",
-    message: "Terima kasih untuk progress update. Mockup sudah terlihat bagus!",
-    timestamp: "16:45",
-    isOwn: false,
-  },
-]
+const initialMessagesData: { [key: number]: any[] } = {
+  1: [
+    {
+      id: 1,
+      sender: "PT Digital Nusantara",
+      message: "Halo Ahmad, bagaimana progress untuk mockup halaman utama?",
+      timestamp: "14:30",
+      isOwn: false,
+    },
+    {
+      id: 2,
+      sender: "You",
+      message: "Halo! Mockup sudah 90% selesai. Saya sedang finalisasi beberapa detail di section hero.",
+      timestamp: "14:32",
+      isOwn: true,
+    },
+    {
+      id: 3,
+      sender: "You",
+      message: "Estimasi akan selesai dalam 2 jam lagi. Bisa saya kirim untuk review?",
+      timestamp: "14:32",
+      isOwn: true,
+    },
+    {
+      id: 4,
+      sender: "PT Digital Nusantara",
+      message: "Perfect! Silakan kirim begitu sudah ready. Saya akan review dan berikan feedback.",
+      timestamp: "14:35",
+      isOwn: false,
+    },
+    {
+      id: 5,
+      sender: "PT Digital Nusantara",
+      message: "Terima kasih untuk progress update. Mockup sudah terlihat bagus!",
+      timestamp: "16:45",
+      isOwn: false,
+    },
+  ],
+  2: [
+    {
+      id: 1,
+      sender: "CV Maju Bersama",
+      message: "Bisa kita schedule meeting untuk discuss next milestone?",
+      timestamp: "10:15",
+      isOwn: false,
+    },
+  ],
+  3: [
+    {
+      id: 1,
+      sender: "Startup TechCorp",
+      message: "Payment untuk milestone pertama sudah diproses.",
+      timestamp: "09:30",
+      isOwn: false,
+    },
+  ],
+  4: [
+    {
+      id: 1,
+      sender: "CV Digital Solutions",
+      message: "Dokumentasi API sudah saya kirim via email.",
+      timestamp: "08:00",
+      isOwn: false,
+    },
+  ],
+}
 
 export default function WorkerMessages() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
-  const [selectedConversation, setSelectedConversation] = useState(conversations[0])
+  const [conversations, setConversations] = useState(initialConversations)
+  const [selectedConversation, setSelectedConversation] = useState(initialConversations[0])
+  const [messages, setMessages] = useState<{ [key: number]: any[] }>(initialMessagesData)
   const [newMessage, setNewMessage] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, selectedConversation])
 
   useEffect(() => {
     const userData = localStorage.getItem("kerjoo_user")
@@ -117,9 +157,42 @@ export default function WorkerMessages() {
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
-      // Add message logic here
+      const currentTime = new Date().toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+
+      const newMsg = {
+        id: (messages[selectedConversation.id]?.length || 0) + 1,
+        sender: "You",
+        message: newMessage.trim(),
+        timestamp: currentTime,
+        isOwn: true,
+      }
+
+      // Update messages for the selected conversation
+      setMessages((prev) => ({
+        ...prev,
+        [selectedConversation.id]: [...(prev[selectedConversation.id] || []), newMsg],
+      }))
+
+      // Update last message in conversations list
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === selectedConversation.id
+            ? { ...conv, lastMessage: newMessage.trim(), timestamp: "Baru saja" }
+            : conv,
+        ),
+      )
+
       setNewMessage("")
     }
+  }
+
+  const handleSelectConversation = (conversation: any) => {
+    setSelectedConversation(conversation)
+    // Mark conversation as read
+    setConversations((prev) => prev.map((conv) => (conv.id === conversation.id ? { ...conv, unread: 0 } : conv)))
   }
 
   const filteredConversations = conversations.filter(
@@ -127,6 +200,8 @@ export default function WorkerMessages() {
       conv.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       conv.project.toLowerCase().includes(searchTerm.toLowerCase()),
   )
+
+  const currentMessages = messages[selectedConversation.id] || []
 
   if (!user) {
     return <div>Loading...</div>
@@ -153,14 +228,14 @@ export default function WorkerMessages() {
               </div>
             </div>
 
-            <div className="overflow-y-auto">
+            <div className="overflow-y-auto h-[calc(100vh-140px)]">
               {filteredConversations.map((conversation) => (
                 <div
                   key={conversation.id}
                   className={`p-4 border-b border-border cursor-pointer hover:bg-accent transition-colors ${
                     selectedConversation.id === conversation.id ? "bg-accent" : ""
                   }`}
-                  onClick={() => setSelectedConversation(conversation)}
+                  onClick={() => handleSelectConversation(conversation)}
                 >
                   <div className="flex items-start gap-3">
                     <div className="relative">
@@ -169,7 +244,7 @@ export default function WorkerMessages() {
                         <AvatarFallback>{conversation.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       {conversation.online && (
-                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
+                        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-card"></div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -207,7 +282,7 @@ export default function WorkerMessages() {
                       <AvatarFallback>{selectedConversation.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     {selectedConversation.online && (
-                      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
+                      <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-card"></div>
                     )}
                   </div>
                   <div>
@@ -232,12 +307,12 @@ export default function WorkerMessages() {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/20">
               {currentMessages.map((message) => (
                 <div key={message.id} className={`flex ${message.isOwn ? "justify-end" : "justify-start"}`}>
                   <div
                     className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                      message.isOwn ? "bg-primary text-primary-foreground" : "bg-muted"
+                      message.isOwn ? "bg-primary text-primary-foreground" : "bg-card border border-border"
                     }`}
                   >
                     <p className="text-sm">{message.message}</p>
@@ -251,6 +326,7 @@ export default function WorkerMessages() {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Message Input */}
@@ -263,7 +339,7 @@ export default function WorkerMessages() {
                   placeholder="Ketik pesan..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && handleSendMessage()}
                   className="flex-1"
                 />
                 <Button onClick={handleSendMessage} disabled={!newMessage.trim()}>

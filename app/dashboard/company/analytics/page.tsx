@@ -7,6 +7,16 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { CompanySidebar } from "@/components/company-sidebar"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
   TrendingUp,
   TrendingDown,
   BarChart3,
@@ -18,6 +28,7 @@ import {
   Clock,
   Target,
 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 const analyticsData = {
   overview: [
@@ -76,6 +87,9 @@ export default function CompanyAnalytics() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
   const [timeRange, setTimeRange] = useState("6months")
+  const [exportRange, setExportRange] = useState("6months")
+  const [isExportDialogOpen, setIsExportDialogOpen] = useState(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     const userData = localStorage.getItem("kerjoo_user")
@@ -95,6 +109,30 @@ export default function CompanyAnalytics() {
     }
   }, [router])
 
+  const handleTimeRangeChange = (range: string) => {
+    setTimeRange(range)
+    toast({
+      title: "Time Range Updated",
+      description: `Showing data for ${range === "1month" ? "1 month" : range === "3months" ? "3 months" : range === "6months" ? "6 months" : "1 year"}`,
+    })
+  }
+
+  const handleExportReport = () => {
+    toast({
+      title: "Exporting Report",
+      description: `Generating report for ${exportRange === "1month" ? "1 month" : exportRange === "3months" ? "3 months" : exportRange === "6months" ? "6 months" : "1 year"}...`,
+    })
+
+    // Simulate export
+    setTimeout(() => {
+      toast({
+        title: "Report Exported",
+        description: "Your analytics report has been downloaded successfully.",
+      })
+      setIsExportDialogOpen(false)
+    }, 2000)
+  }
+
   if (!user) {
     return <div>Loading...</div>
   }
@@ -111,18 +149,94 @@ export default function CompanyAnalytics() {
               <p className="text-muted-foreground">Analisis mendalam tentang performa proyek dan tim Anda</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline">
-                <Calendar className="w-4 h-4 mr-2" />
-                Last 6 Months
-              </Button>
-              <Button>
-                <Download className="w-4 h-4 mr-2" />
-                Export Report
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    {timeRange === "1month"
+                      ? "Last 1 Month"
+                      : timeRange === "3months"
+                        ? "Last 3 Months"
+                        : timeRange === "6months"
+                          ? "Last 6 Months"
+                          : "Last 1 Year"}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Select Time Range</DialogTitle>
+                    <DialogDescription>Choose the time period for analytics data</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>Time Period</Label>
+                      <Select value={timeRange} onValueChange={handleTimeRangeChange}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1month">Last 1 Month</SelectItem>
+                          <SelectItem value="3months">Last 3 Months</SelectItem>
+                          <SelectItem value="6months">Last 6 Months</SelectItem>
+                          <SelectItem value="1year">Last 1 Year</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Download className="w-4 h-4 mr-2" />
+                    Export Report
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Export Analytics Report</DialogTitle>
+                    <DialogDescription>Select the time period for your report</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>Report Time Period</Label>
+                      <Select value={exportRange} onValueChange={setExportRange}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1month">Last 1 Month</SelectItem>
+                          <SelectItem value="3months">Last 3 Months</SelectItem>
+                          <SelectItem value="6months">Last 6 Months</SelectItem>
+                          <SelectItem value="1year">Last 1 Year</SelectItem>
+                          <SelectItem value="custom">Custom Range</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Export Format</Label>
+                      <Select defaultValue="pdf">
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pdf">PDF Document</SelectItem>
+                          <SelectItem value="excel">Excel Spreadsheet</SelectItem>
+                          <SelectItem value="csv">CSV File</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button className="w-full" onClick={handleExportReport}>
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Report
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
 
-          {/* Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {analyticsData.overview.map((item, index) => (
               <Card key={index}>
@@ -147,7 +261,6 @@ export default function CompanyAnalytics() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Project Status Distribution */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -181,7 +294,6 @@ export default function CompanyAnalytics() {
               </CardContent>
             </Card>
 
-            {/* Monthly Trends */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -214,7 +326,6 @@ export default function CompanyAnalytics() {
             </Card>
           </div>
 
-          {/* Top Performers */}
           <Card>
             <CardHeader>
               <CardTitle>Top Performing Workers</CardTitle>
@@ -249,7 +360,6 @@ export default function CompanyAnalytics() {
             </CardContent>
           </Card>
 
-          {/* Performance Insights */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card>
               <CardHeader>

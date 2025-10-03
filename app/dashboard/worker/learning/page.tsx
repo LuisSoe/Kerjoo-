@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import { Input } from "@/components/ui/input"
 import { WorkerSidebar } from "@/components/worker-sidebar"
 import { Search, Play, BookOpen, Clock, Star, Award } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 const courses = [
   {
@@ -61,6 +62,53 @@ const courses = [
   },
 ]
 
+const allAvailableCourses = [
+  {
+    id: 5,
+    title: "Advanced CSS & Animations",
+    instructor: "Emily Chen",
+    duration: "7 hours",
+    rating: 4.9,
+    level: "Advanced",
+    category: "Frontend",
+    thumbnail: "/css-course.png",
+    price: "Rp 299,000",
+  },
+  {
+    id: 6,
+    title: "Python for Data Science",
+    instructor: "David Lee",
+    duration: "15 hours",
+    rating: 4.8,
+    level: "Intermediate",
+    category: "Programming",
+    thumbnail: "/python-course.png",
+    price: "Rp 399,000",
+  },
+  {
+    id: 7,
+    title: "Mobile App Development with React Native",
+    instructor: "Alex Turner",
+    duration: "20 hours",
+    rating: 4.7,
+    level: "Intermediate",
+    category: "Mobile",
+    thumbnail: "/react-native-course.png",
+    price: "Rp 499,000",
+  },
+  {
+    id: 8,
+    title: "GraphQL & Apollo Client",
+    instructor: "Maria Garcia",
+    duration: "9 hours",
+    rating: 4.6,
+    level: "Advanced",
+    category: "Backend",
+    thumbnail: "/graphql-course.png",
+    price: "Rp 349,000",
+  },
+]
+
 const learningStats = [
   { label: "Courses Completed", value: "12", icon: Award },
   { label: "Hours Learned", value: "156", icon: Clock },
@@ -73,6 +121,7 @@ export default function WorkerLearning() {
   const [user, setUser] = useState<any>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("all")
+  const [isBrowseCoursesOpen, setIsBrowseCoursesOpen] = useState(false)
 
   useEffect(() => {
     const userData = localStorage.getItem("kerjoo_user")
@@ -126,6 +175,16 @@ export default function WorkerLearning() {
     return matchesSearch && matchesCategory
   })
 
+  const handleContinueCourse = (courseId: number) => {
+    router.push(`/dashboard/worker/learning/${courseId}`)
+  }
+
+  const handleEnrollCourse = (courseId: number) => {
+    console.log("Enrolling in course:", courseId)
+    setIsBrowseCoursesOpen(false)
+    alert("Berhasil mendaftar ke kursus!")
+  }
+
   if (!user) {
     return <div>Loading...</div>
   }
@@ -141,13 +200,12 @@ export default function WorkerLearning() {
               <h1 className="text-3xl font-bold">Learning Center</h1>
               <p className="text-muted-foreground">Tingkatkan skill Anda dengan kursus dan pelatihan terbaik</p>
             </div>
-            <Button>
+            <Button onClick={() => setIsBrowseCoursesOpen(true)}>
               <BookOpen className="w-4 h-4 mr-2" />
               Browse Courses
             </Button>
           </div>
 
-          {/* Learning Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {learningStats.map((stat, index) => (
               <Card key={index}>
@@ -162,7 +220,6 @@ export default function WorkerLearning() {
             ))}
           </div>
 
-          {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -201,7 +258,6 @@ export default function WorkerLearning() {
             </div>
           </div>
 
-          {/* Courses Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCourses.map((course) => (
               <Card key={course.id} className="hover:shadow-lg transition-shadow">
@@ -212,7 +268,11 @@ export default function WorkerLearning() {
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                    <Button size="sm" className="bg-white/90 text-black hover:bg-white">
+                    <Button
+                      size="sm"
+                      className="bg-white/90 text-black hover:bg-white"
+                      onClick={() => handleContinueCourse(course.id)}
+                    >
                       <Play className="w-4 h-4 mr-2" />
                       {course.status === "not-started" ? "Mulai" : "Lanjutkan"}
                     </Button>
@@ -263,6 +323,51 @@ export default function WorkerLearning() {
               <p className="text-muted-foreground">Tidak ada kursus yang ditemukan</p>
             </div>
           )}
+
+          <Dialog open={isBrowseCoursesOpen} onOpenChange={setIsBrowseCoursesOpen}>
+            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Jelajahi Kursus Baru</DialogTitle>
+                <DialogDescription>Temukan kursus terbaik untuk meningkatkan skill dan karir Anda</DialogDescription>
+              </DialogHeader>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+                {allAvailableCourses.map((course) => (
+                  <Card key={course.id}>
+                    <div className="aspect-video relative overflow-hidden rounded-t-lg">
+                      <img
+                        src={course.thumbnail || "/placeholder.svg"}
+                        alt={course.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <CardHeader>
+                      <CardTitle className="text-base">{course.title}</CardTitle>
+                      <CardDescription>by {course.instructor}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {course.duration}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          {course.rating}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Badge variant="outline">{course.category}</Badge>
+                        <span className="font-semibold text-primary">{course.price}</span>
+                      </div>
+                      <Button className="w-full" onClick={() => handleEnrollCourse(course.id)}>
+                        Daftar Sekarang
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </main>
     </div>

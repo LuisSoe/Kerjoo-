@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CompanySidebar } from "@/components/company-sidebar"
 import { Sparkles, Star, TrendingUp, Users, Zap, Brain } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 const aiRecommendations = [
   {
@@ -86,6 +87,8 @@ const insights = [
 export default function CompanyRecommendations() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     const userData = localStorage.getItem("kerjoo_user")
@@ -133,6 +136,56 @@ export default function CompanyRecommendations() {
     }
   }
 
+  const handleViewCandidates = (recommendationId: number) => {
+    router.push(`/dashboard/company/talent?recommendation=${recommendationId}`)
+  }
+
+  const handleViewOptimization = (recommendationId: number) => {
+    router.push(`/dashboard/company/projects?optimization=${recommendationId}`)
+  }
+
+  const handleViewAnalysis = (recommendationId: number) => {
+    router.push(`/dashboard/company/analytics?analysis=${recommendationId}`)
+  }
+
+  const handleViewTraining = (recommendationId: number) => {
+    router.push(`/dashboard/company/training?skill=${recommendationId}`)
+  }
+
+  const handleGenerateInsights = async () => {
+    setIsGenerating(true)
+    toast({
+      title: "Generating AI Insights",
+      description: "Analyzing your project data...",
+    })
+
+    // Simulate AI generation
+    setTimeout(() => {
+      setIsGenerating(false)
+      toast({
+        title: "New Insights Generated",
+        description: "AI has analyzed your data and generated new recommendations.",
+      })
+      // Refresh the page to show new recommendations
+      router.refresh()
+    }, 3000)
+  }
+
+  const getActionHandler = (action: string, id: number) => {
+    switch (action) {
+      case "View Candidates":
+        return () => handleViewCandidates(id)
+      case "View Optimization":
+        return () => handleViewOptimization(id)
+      case "View Analysis":
+        return () => handleViewAnalysis(id)
+      case "View Training":
+        return () => handleViewTraining(id)
+      default:
+        return () => {}
+    }
+  }
+
   if (!user) {
     return <div>Loading...</div>
   }
@@ -151,9 +204,9 @@ export default function CompanyRecommendations() {
               </h1>
               <p className="text-muted-foreground">Insights dan rekomendasi cerdas untuk mengoptimalkan proyek Anda</p>
             </div>
-            <Button>
+            <Button onClick={handleGenerateInsights} disabled={isGenerating}>
               <Brain className="w-4 h-4 mr-2" />
-              Generate New Insights
+              {isGenerating ? "Generating..." : "Generate New Insights"}
             </Button>
           </div>
 
@@ -243,7 +296,9 @@ export default function CompanyRecommendations() {
                       </div>
                     )}
 
-                    <Button className="w-full">{recommendation.action}</Button>
+                    <Button className="w-full" onClick={getActionHandler(recommendation.action, recommendation.id)}>
+                      {recommendation.action}
+                    </Button>
                   </CardContent>
                 </Card>
               ))}

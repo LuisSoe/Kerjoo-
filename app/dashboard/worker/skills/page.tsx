@@ -8,6 +8,17 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { WorkerSidebar } from "@/components/worker-sidebar"
 import { Plus, Star, TrendingUp, Award } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const skillCategories = [
   {
@@ -38,6 +49,14 @@ const skillCategories = [
       { name: "Figma", level: 70, verified: true },
     ],
   },
+  {
+    name: "Design",
+    skills: [],
+  },
+  {
+    name: "Mobile Development",
+    skills: [],
+  },
 ]
 
 const achievements = [
@@ -64,6 +83,12 @@ const achievements = [
 export default function WorkerSkills() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
+  const [isAddSkillOpen, setIsAddSkillOpen] = useState(false)
+  const [newSkill, setNewSkill] = useState({
+    name: "",
+    category: "",
+    level: 50,
+  })
 
   useEffect(() => {
     const userData = localStorage.getItem("kerjoo_user")
@@ -97,6 +122,13 @@ export default function WorkerSkills() {
     return "text-gray-600"
   }
 
+  const handleAddSkill = () => {
+    console.log("Adding new skill:", newSkill)
+    setNewSkill({ name: "", category: "", level: 50 })
+    setIsAddSkillOpen(false)
+    alert("Skill berhasil ditambahkan!")
+  }
+
   if (!user) {
     return <div>Loading...</div>
   }
@@ -112,7 +144,7 @@ export default function WorkerSkills() {
               <h1 className="text-3xl font-bold">Skills & Keahlian</h1>
               <p className="text-muted-foreground">Kelola dan tingkatkan keahlian profesional Anda</p>
             </div>
-            <Button>
+            <Button onClick={() => setIsAddSkillOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Tambah Skill
             </Button>
@@ -210,6 +242,72 @@ export default function WorkerSkills() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Add Skill Dialog */}
+          <Dialog open={isAddSkillOpen} onOpenChange={setIsAddSkillOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Tambah Skill Baru</DialogTitle>
+                <DialogDescription>
+                  Tambahkan skill baru ke profil Anda untuk meningkatkan peluang mendapat proyek
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="skill-name">Nama Skill</Label>
+                  <Input
+                    id="skill-name"
+                    placeholder="Contoh: React, Python, Figma"
+                    value={newSkill.name}
+                    onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="skill-category">Kategori</Label>
+                  <Select
+                    value={newSkill.category}
+                    onValueChange={(value) => setNewSkill({ ...newSkill, category: value })}
+                  >
+                    <SelectTrigger id="skill-category">
+                      <SelectValue placeholder="Pilih kategori" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Frontend Development">Frontend Development</SelectItem>
+                      <SelectItem value="Backend Development">Backend Development</SelectItem>
+                      <SelectItem value="Tools & Others">Tools & Others</SelectItem>
+                      <SelectItem value="Design">Design</SelectItem>
+                      <SelectItem value="Mobile Development">Mobile Development</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="skill-level">Level Keahlian: {newSkill.level}%</Label>
+                  <input
+                    id="skill-level"
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={newSkill.level}
+                    onChange={(e) => setNewSkill({ ...newSkill, level: Number.parseInt(e.target.value) })}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Beginner</span>
+                    <span>Intermediate</span>
+                    <span>Expert</span>
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsAddSkillOpen(false)}>
+                  Batal
+                </Button>
+                <Button onClick={handleAddSkill} disabled={!newSkill.name || !newSkill.category}>
+                  Tambah Skill
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </main>
     </div>

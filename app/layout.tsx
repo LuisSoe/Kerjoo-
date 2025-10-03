@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { GeistSans } from "geist/font/sans"
+import { Plus_Jakarta_Sans } from "next/font/google"
 import { GeistMono } from "geist/font/mono"
 // import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
@@ -19,9 +19,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const jakarta = Plus_Jakarta_Sans({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700", "800"],
+    variable: "--font-jakarta",
+    display: "swap",
+  })
+
   return (
-    <html lang="id" className="dark">
-      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="id" className="dark antialiased">
+      <body className={`font-sans ${jakarta.variable} ${GeistMono.variable}`}>
         <Navigation />
         <Suspense fallback={null}>{children}</Suspense>
         {/* <Analytics /> */}

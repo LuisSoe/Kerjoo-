@@ -4,14 +4,10 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Briefcase, Wallet, Star, Award, DollarSign, BookOpen, ChevronRight, Edit } from "lucide-react"
+import { Briefcase, Wallet, Star, Award, DollarSign, BookOpen, ChevronRight, Target, TrendingUp } from "lucide-react"
 import Link from "next/link"
 
 export function WorkerDashboard() {
-  const [activeTab, setActiveTab] = useState("overview")
   const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
@@ -21,7 +17,6 @@ export function WorkerDashboard() {
     }
   }, [])
 
-  // Mock data with fallback to user data
   const workerData = {
     name: user?.name || "Ahmad Rizki",
     email: user?.email || "ahmad.rizki@email.com",
@@ -92,273 +87,281 @@ export function WorkerDashboard() {
   ]
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">Kelola dan pantau semua proyek yang sedang Anda kerjakan</p>
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+        <Button asChild>
+          <Link href="/projects">
+            <Briefcase className="w-4 h-4 mr-2" />
+            Cari Proyek
+          </Link>
+        </Button>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <div className="w-full overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-5 min-w-fit">
-            <TabsTrigger value="overview" className="whitespace-nowrap">
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="profile" className="whitespace-nowrap">
-              Profile
-            </TabsTrigger>
-            <TabsTrigger value="projects" className="whitespace-nowrap">
-              Proyek
-            </TabsTrigger>
-            <TabsTrigger value="skills" className="whitespace-nowrap">
-              Skills
-            </TabsTrigger>
-            <TabsTrigger value="earnings" className="whitespace-nowrap">
-              Penghasilan
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
-        <TabsContent value="overview" className="space-y-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Proyek Selesai</CardTitle>
-                <Briefcase className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{workerData.completedProjects}</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Proyek Selesai</p>
+                <p className="text-3xl font-bold text-foreground">{workerData.completedProjects}</p>
                 <p className="text-xs text-muted-foreground">+2 dari bulan lalu</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Rating</CardTitle>
-                <Star className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{workerData.rating}</div>
-                <p className="text-xs text-muted-foreground">Dari 5.0</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Penghasilan</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Rp {workerData.earnings.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">+15% dari bulan lalu</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Skill Points</CardTitle>
-                <Award className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{workerData.skillPoints}</div>
-                <p className="text-xs text-muted-foreground">Level {workerData.level}</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Recent Projects & Recommendations */}
-          <div className="grid lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Proyek Terbaru</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {recentProjects.map((project) => (
-                  <div
-                    key={project.id}
-                    className="flex items-center justify-between p-4 border-2 border-[#1f2937] rounded-lg"
-                  >
-                    <div className="flex-1">
-                      <h4 className="font-medium">{project.title}</h4>
-                      <p className="text-sm text-muted-foreground">{project.client}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge variant={project.status === "Completed" ? "default" : "secondary"}>
-                          {project.status}
-                        </Badge>
-                        {project.rating && (
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span className="text-sm">{project.rating}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium">Rp {project.earnings.toLocaleString()}</p>
-                      {project.progress && (
-                        <div className="w-20 mt-2">
-                          <Progress value={project.progress} className="h-2" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Rekomendasi Proyek</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {recommendedProjects.map((project) => (
-                  <div key={project.id} className="p-4 border-2 border-[#1f2937] rounded-lg">
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="font-medium">{project.title}</h4>
-                      <Badge variant="secondary">{project.matchScore}% Match</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">{project.client}</p>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                      <span>{project.budget}</span>
-                      <span>•</span>
-                      <span>{project.deadline}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {project.skills.map((skill) => (
-                        <Badge key={skill} variant="outline" className="text-xs">
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                    <Button size="sm" className="w-full">
-                      Lihat Detail
-                      <ChevronRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="profile" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Profil Saya</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center gap-6">
-                <Avatar className="w-20 h-20">
-                  <AvatarImage src={workerData.avatar || "/placeholder.svg"} alt={workerData.name} />
-                  <AvatarFallback>
-                    {workerData.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold">{workerData.name}</h3>
-                  <p className="text-muted-foreground">{workerData.email}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge>{workerData.level}</Badge>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span>{workerData.rating}</span>
-                    </div>
-                  </div>
-                </div>
-                <Button variant="outline">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit Profil
-                </Button>
               </div>
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <Briefcase className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-              <div>
-                <h4 className="font-medium mb-3">Badge & Pencapaian</h4>
-                <div className="flex flex-wrap gap-2">
-                  {workerData.badges.map((badge) => (
-                    <Badge key={badge} variant="secondary" className="flex items-center gap-1">
-                      <Award className="w-3 h-3" />
-                      {badge}
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Rating</p>
+                <p className="text-3xl font-bold text-foreground">{workerData.rating}</p>
+                <p className="text-xs text-muted-foreground">Dari 5.0</p>
+              </div>
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <Star className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Total Penghasilan</p>
+                <p className="text-3xl font-bold text-foreground">Rp {(workerData.earnings / 1000000).toFixed(1)}M</p>
+                <p className="text-xs text-muted-foreground">+15% dari bulan lalu</p>
+              </div>
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Skill Points</p>
+                <p className="text-3xl font-bold text-foreground">{workerData.skillPoints}</p>
+                <p className="text-xs text-muted-foreground">Level {workerData.level}</p>
+              </div>
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <Award className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader className="border-b">
+          <CardTitle className="text-xl font-semibold">Proyek Terbaru</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-muted/50 border-b">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">Nama Proyek</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">Status</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">Rating</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">Penghasilan</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium text-muted-foreground">Progress</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {recentProjects.map((project) => (
+                  <tr key={project.id} className="hover:bg-muted/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/60 rounded-lg flex items-center justify-center">
+                          <Briefcase className="w-5 h-5 text-primary-foreground" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-foreground">{project.title}</p>
+                          <p className="text-sm text-muted-foreground">{project.client}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge
+                        className={
+                          project.status === "Completed"
+                            ? "bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400"
+                            : project.status === "In Progress"
+                              ? "bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400"
+                              : "bg-blue-100 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400"
+                        }
+                      >
+                        {project.status}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4">
+                      {project.rating ? (
+                        <div className="flex items-center gap-1">
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-sm font-medium text-foreground">{project.rating}</span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">-</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-sm font-medium text-foreground">Rp {project.earnings.toLocaleString()}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      {project.progress ? (
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-medium text-foreground min-w-[3rem]">{project.progress}%</span>
+                          <div className="flex-1 max-w-[100px]">
+                            <div className="w-full bg-muted rounded-full h-2">
+                              <div
+                                className="bg-primary h-2 rounded-full transition-all"
+                                style={{ width: `${project.progress}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">Selesai</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader className="border-b">
+            <CardTitle className="text-xl font-semibold">Rekomendasi Proyek</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            {recommendedProjects.map((project) => (
+              <div key={project.id} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between mb-2">
+                  <h4 className="font-medium text-foreground">{project.title}</h4>
+                  <Badge className="bg-primary/10 text-primary hover:bg-primary/20">{project.matchScore}% Match</Badge>
+                </div>
+                <p className="text-sm text-muted-foreground mb-2">{project.client}</p>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                  <span>{project.budget}</span>
+                  <span>•</span>
+                  <span>{project.deadline}</span>
+                </div>
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {project.skills.map((skill) => (
+                    <Badge key={skill} variant="outline" className="text-xs">
+                      {skill}
                     </Badge>
                   ))}
                 </div>
+                <Button size="sm" className="w-full">
+                  Lihat Detail
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            ))}
+          </CardContent>
+        </Card>
 
-        <TabsContent value="skills" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Skill Development</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {skills.map((skill) => (
-                <div key={skill.name} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium">{skill.name}</h4>
-                      <p className="text-sm text-muted-foreground">{skill.category}</p>
-                    </div>
-                    <Badge variant="outline">{skill.level}%</Badge>
-                  </div>
-                  <Progress value={skill.level} className="h-2" />
-                </div>
-              ))}
-
-              <Button className="w-full mt-6" asChild>
+        <Card>
+          <CardHeader className="border-b">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-xl font-semibold">Skill Development</CardTitle>
+              <Button variant="ghost" size="sm" asChild>
                 <Link href="/learning">
                   <BookOpen className="w-4 h-4 mr-2" />
-                  Ikuti Learning Module
+                  Learning
                 </Link>
               </Button>
-            </CardContent>
-          </Card>
-        </TabsContent>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 space-y-6">
+            {skills.map((skill) => (
+              <div key={skill.name} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium text-foreground">{skill.name}</h4>
+                    <p className="text-sm text-muted-foreground">{skill.category}</p>
+                  </div>
+                  <Badge variant="outline" className="font-semibold">
+                    {skill.level}%
+                  </Badge>
+                </div>
+                <div className="w-full bg-muted rounded-full h-2">
+                  <div className="bg-primary h-2 rounded-full transition-all" style={{ width: `${skill.level}%` }} />
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
 
-        <TabsContent value="earnings" className="space-y-6">
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Saldo Tersedia</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Rp 2,450,000</div>
-                <Button className="w-full mt-4" asChild>
-                  <Link href="/wallet">
-                    <Wallet className="w-4 h-4 mr-2" />
-                    Tarik Dana
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+      <div className="grid md:grid-cols-3 gap-6">
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Saldo Tersedia</p>
+                <p className="text-2xl font-bold text-foreground">Rp 2,450,000</p>
+              </div>
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <Wallet className="w-5 h-5 text-primary" />
+              </div>
+            </div>
+            <Button className="w-full" asChild>
+              <Link href="/dashboard/worker/wallet">
+                <Wallet className="w-4 h-4 mr-2" />
+                Tarik Dana
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Penghasilan Bulan Ini</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Rp 4,200,000</div>
-                <p className="text-sm text-muted-foreground">+25% dari bulan lalu</p>
-              </CardContent>
-            </Card>
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Penghasilan Bulan Ini</p>
+                <p className="text-2xl font-bold text-foreground">Rp 4,200,000</p>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" />
+                  +25% dari bulan lalu
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Rata-rata per Proyek</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">Rp 1,750,000</div>
-                <p className="text-sm text-muted-foreground">Berdasarkan 24 proyek</p>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-muted-foreground">Rata-rata per Proyek</p>
+                <p className="text-2xl font-bold text-foreground">Rp 1,750,000</p>
+                <p className="text-xs text-muted-foreground">Berdasarkan 24 proyek</p>
+              </div>
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <Target className="w-5 h-5 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

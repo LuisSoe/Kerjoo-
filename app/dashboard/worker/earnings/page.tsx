@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { WorkerSidebar } from "@/components/worker-sidebar"
-import { DollarSign, TrendingUp, Calendar, Download, Eye, CreditCard } from "lucide-react"
+import { DollarSign, TrendingUp, Calendar, Download, Eye, EyeOff, CreditCard } from "lucide-react"
 
 const earningsData = [
   {
@@ -57,6 +57,7 @@ const monthlyStats = [
 export default function WorkerEarnings() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
+  const [showAmounts, setShowAmounts] = useState(true)
 
   useEffect(() => {
     const userData = localStorage.getItem("kerjoo_user")
@@ -101,6 +102,36 @@ export default function WorkerEarnings() {
       return sum + amount
     }, 0)
 
+  const handleExportReport = () => {
+    const csvContent = [
+      ["Project", "Client", "Amount", "Status", "Date", "Payment Method"],
+      ...earningsData.map((earning) => [
+        earning.project,
+        earning.client,
+        earning.amount,
+        earning.status,
+        earning.date,
+        earning.paymentMethod,
+      ]),
+    ]
+      .map((row) => row.join(","))
+      .join("\n")
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+    const link = document.createElement("a")
+    const url = URL.createObjectURL(blob)
+    link.setAttribute("href", url)
+    link.setAttribute("download", `earnings_report_${new Date().toISOString().split("T")[0]}.csv`)
+    link.style.visibility = "hidden"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  const displayAmount = (amount: string) => {
+    return showAmounts ? amount : "Rp ••••••"
+  }
+
   if (!user) {
     return <div>Loading...</div>
   }
@@ -116,10 +147,25 @@ export default function WorkerEarnings() {
               <h1 className="text-3xl font-bold">Penghasilan</h1>
               <p className="text-muted-foreground">Pantau pendapatan dan riwayat pembayaran Anda</p>
             </div>
-            <Button>
-              <Download className="w-4 h-4 mr-2" />
-              Export Report
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setShowAmounts(!showAmounts)}>
+                {showAmounts ? (
+                  <>
+                    <EyeOff className="w-4 h-4 mr-2" />
+                    Sembunyikan
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-4 h-4 mr-2" />
+                    Tampilkan
+                  </>
+                )}
+              </Button>
+              <Button onClick={handleExportReport}>
+                <Download className="w-4 h-4 mr-2" />
+                Export Report
+              </Button>
+            </div>
           </div>
 
           {/* Earnings Overview */}
@@ -130,7 +176,9 @@ export default function WorkerEarnings() {
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">Rp {totalEarnings.toLocaleString("id-ID")}</div>
+                <div className="text-2xl font-bold">
+                  {showAmounts ? `Rp ${totalEarnings.toLocaleString("id-ID")}` : "Rp ••••••"}
+                </div>
                 <p className="text-xs text-muted-foreground">+12% dari bulan lalu</p>
               </CardContent>
             </Card>
@@ -140,7 +188,9 @@ export default function WorkerEarnings() {
                 <Calendar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">Rp {pendingEarnings.toLocaleString("id-ID")}</div>
+                <div className="text-2xl font-bold">
+                  {showAmounts ? `Rp ${pendingEarnings.toLocaleString("id-ID")}` : "Rp ••••••"}
+                </div>
                 <p className="text-xs text-muted-foreground">1 invoice pending</p>
               </CardContent>
             </Card>
@@ -160,7 +210,7 @@ export default function WorkerEarnings() {
                 <CreditCard className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">Rp 7,050,000</div>
+                <div className="text-2xl font-bold">{showAmounts ? "Rp 7,050,000" : "Rp ••••••"}</div>
                 <p className="text-xs text-muted-foreground">+5% dari rata-rata</p>
               </CardContent>
             </Card>
@@ -188,7 +238,7 @@ export default function WorkerEarnings() {
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <div className="font-medium">{earning.amount}</div>
+                        <div className="font-medium">{displayAmount(earning.amount)}</div>
                         {getStatusBadge(earning.status)}
                       </div>
                       <Button variant="ghost" size="sm">
@@ -219,7 +269,7 @@ export default function WorkerEarnings() {
                       <p className="text-sm text-muted-foreground">{stat.projects} proyek selesai</p>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium text-lg">{stat.earnings}</div>
+                      <div className="font-medium text-lg">{displayAmount(stat.earnings)}</div>
                     </div>
                   </div>
                 ))}

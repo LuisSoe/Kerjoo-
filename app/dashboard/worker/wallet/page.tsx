@@ -7,12 +7,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Wallet, TrendingUp, CreditCard, Banknote, ArrowUpRight, ArrowDownLeft, Plus, Minus } from "lucide-react"
+import { Wallet, TrendingUp, CreditCard, Banknote, ArrowUpRight, ArrowDownLeft, Minus } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function WalletPage() {
   const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+  const [isWithdrawOpen, setIsWithdrawOpen] = useState(false)
+  const [withdrawalData, setWithdrawalData] = useState({
+    amount: "",
+    bankName: "",
+    accountNumber: "",
+    accountName: "",
+  })
 
   useEffect(() => {
     const checkAuth = () => {
@@ -39,6 +57,22 @@ export default function WalletPage() {
 
     checkAuth()
   }, [router])
+
+  const handleWithdraw = () => {
+    const amount = Number.parseInt(withdrawalData.amount)
+    if (amount > availableBalance) {
+      alert("Saldo tidak mencukupi!")
+      return
+    }
+    if (amount < 50000) {
+      alert("Minimal penarikan adalah Rp 50,000")
+      return
+    }
+    console.log("Processing withdrawal:", withdrawalData)
+    setWithdrawalData({ amount: "", bankName: "", accountNumber: "", accountName: "" })
+    setIsWithdrawOpen(false)
+    alert("Permintaan penarikan berhasil diajukan! Dana akan diproses dalam 1-3 hari kerja.")
+  }
 
   if (isLoading) {
     return (
@@ -94,10 +128,11 @@ export default function WalletPage() {
       <WorkerSidebar />
       <main className="flex-1 ml-64 p-8">
         <div className="max-w-6xl mx-auto space-y-8">
-          {/* Header */}
-          <div>
-            <h1 className="text-3xl font-bold">Dompet Digital</h1>
-            <p className="text-muted-foreground">Kelola penghasilan dan transaksi Anda</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">Dompet Digital</h1>
+              <p className="text-muted-foreground">Kelola penghasilan dan transaksi Anda</p>
+            </div>
           </div>
 
           {/* Balance Cards */}
@@ -141,11 +176,11 @@ export default function WalletPage() {
 
           {/* Action Buttons */}
           <div className="flex gap-4">
-            <Button className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Top Up
-            </Button>
-            <Button variant="outline" className="flex items-center gap-2 bg-transparent">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2 bg-transparent"
+              onClick={() => setIsWithdrawOpen(true)}
+            >
               <Minus className="h-4 w-4" />
               Tarik Dana
             </Button>
@@ -196,6 +231,85 @@ export default function WalletPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Withdrawal Dialog */}
+          <Dialog open={isWithdrawOpen} onOpenChange={setIsWithdrawOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Tarik Dana</DialogTitle>
+                <DialogDescription>Tarik saldo Anda ke rekening bank. Minimal penarikan Rp 50,000</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label>Saldo Tersedia</Label>
+                  <div className="text-2xl font-bold text-green-600">Rp {availableBalance.toLocaleString("id-ID")}</div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="withdraw-amount">Jumlah Penarikan</Label>
+                  <Input
+                    id="withdraw-amount"
+                    type="number"
+                    placeholder="Masukkan jumlah"
+                    value={withdrawalData.amount}
+                    onChange={(e) => setWithdrawalData({ ...withdrawalData, amount: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="bank-name">Nama Bank</Label>
+                  <Select
+                    value={withdrawalData.bankName}
+                    onValueChange={(value) => setWithdrawalData({ ...withdrawalData, bankName: value })}
+                  >
+                    <SelectTrigger id="bank-name">
+                      <SelectValue placeholder="Pilih bank" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="BCA">BCA</SelectItem>
+                      <SelectItem value="Mandiri">Mandiri</SelectItem>
+                      <SelectItem value="BNI">BNI</SelectItem>
+                      <SelectItem value="BRI">BRI</SelectItem>
+                      <SelectItem value="CIMB">CIMB Niaga</SelectItem>
+                      <SelectItem value="Permata">Permata Bank</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="account-number">Nomor Rekening</Label>
+                  <Input
+                    id="account-number"
+                    placeholder="Masukkan nomor rekening"
+                    value={withdrawalData.accountNumber}
+                    onChange={(e) => setWithdrawalData({ ...withdrawalData, accountNumber: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="account-name">Nama Pemilik Rekening</Label>
+                  <Input
+                    id="account-name"
+                    placeholder="Masukkan nama sesuai rekening"
+                    value={withdrawalData.accountName}
+                    onChange={(e) => setWithdrawalData({ ...withdrawalData, accountName: e.target.value })}
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsWithdrawOpen(false)}>
+                  Batal
+                </Button>
+                <Button
+                  onClick={handleWithdraw}
+                  disabled={
+                    !withdrawalData.amount ||
+                    !withdrawalData.bankName ||
+                    !withdrawalData.accountNumber ||
+                    !withdrawalData.accountName
+                  }
+                >
+                  Tarik Dana
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </main>
     </div>

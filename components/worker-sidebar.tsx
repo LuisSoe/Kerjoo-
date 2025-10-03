@@ -19,15 +19,17 @@ import {
   Bell,
   Search,
   MessageSquare,
+  Bookmark,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard/worker", icon: LayoutDashboard },
   { name: "Cari Kerja", href: "/dashboard/worker/jobs", icon: Search },
+  { name: "Pekerjaan Tersimpan", href: "/dashboard/worker/saved-jobs", icon: Bookmark },
   { name: "Profil", href: "/dashboard/worker/profile", icon: User },
   { name: "Proyek", href: "/dashboard/worker/projects", icon: Briefcase },
-  { name: "Pesan", href: "/dashboard/worker/messages", icon: MessageSquare }, // Added Messages navigation item
+  { name: "Messages", href: "/dashboard/worker/messages", icon: MessageSquare },
   { name: "Skills", href: "/dashboard/worker/skills", icon: TrendingUp },
   { name: "Belajar", href: "/dashboard/worker/learning", icon: BookOpen },
   { name: "Dompet", href: "/dashboard/worker/wallet", icon: Wallet },
@@ -41,11 +43,9 @@ export function WorkerSidebar() {
   const router = useRouter()
 
   const handleLogout = () => {
-    localStorage.removeItem("kerjoo_user")
-    localStorage.removeItem("kerjoo_auth")
-    sessionStorage.removeItem("kerjoo_user")
-    sessionStorage.removeItem("kerjoo_auth")
-    router.push("/")
+    localStorage.clear()
+    sessionStorage.clear()
+    window.location.href = "/"
   }
 
   return (
@@ -62,21 +62,25 @@ export function WorkerSidebar() {
         {/* User Info */}
         <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3">
-            <Avatar>
-              <AvatarImage src="/professional-indonesian-man.jpg" />
-              <AvatarFallback>AR</AvatarFallback>
-            </Avatar>
+            <Link href="/dashboard/worker/profile" className="cursor-pointer">
+              <Avatar>
+                <AvatarImage src="/professional-indonesian-man.jpg" />
+                <AvatarFallback>AR</AvatarFallback>
+              </Avatar>
+            </Link>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">Ahmad Rizki</p>
               <p className="text-xs text-muted-foreground">Intermediate Level</p>
             </div>
-            <Button variant="ghost" size="sm" className="relative">
-              <Bell className="w-4 h-4" />
-              {notifications > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
-                  {notifications}
-                </span>
-              )}
+            <Button variant="ghost" size="sm" className="relative" asChild>
+              <Link href="/dashboard/worker/notifications">
+                <Bell className="w-4 h-4" />
+                {notifications > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                    {notifications}
+                  </span>
+                )}
+              </Link>
             </Button>
           </div>
         </div>

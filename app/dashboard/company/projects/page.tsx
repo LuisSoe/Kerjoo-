@@ -103,6 +103,18 @@ export default function CompanyProjects() {
     return matchesSearch && matchesStatus
   })
 
+  const handleViewDetail = (projectId: number) => {
+    router.push(`/dashboard/company/projects/${projectId}`)
+  }
+
+  const handleManageProject = (projectId: number) => {
+    router.push(`/dashboard/company/projects/${projectId}/manage`)
+  }
+
+  const handleCreateProject = () => {
+    router.push("/dashboard/company/projects/new")
+  }
+
   if (!user) {
     return <div>Loading...</div>
   }
@@ -118,7 +130,7 @@ export default function CompanyProjects() {
               <h1 className="text-3xl font-bold">Manajemen Proyek</h1>
               <p className="text-muted-foreground">Kelola dan pantau semua proyek perusahaan</p>
             </div>
-            <Button>
+            <Button onClick={handleCreateProject}>
               <Plus className="w-4 h-4 mr-2" />
               Proyek Baru
             </Button>
@@ -255,10 +267,16 @@ export default function CompanyProjects() {
                   </div>
 
                   <div className="flex gap-2">
-                    <Button className="flex-1 bg-transparent" variant="outline">
+                    <Button
+                      className="flex-1 bg-transparent"
+                      variant="outline"
+                      onClick={() => handleViewDetail(project.id)}
+                    >
                       Lihat Detail
                     </Button>
-                    <Button className="flex-1">Kelola</Button>
+                    <Button className="flex-1" onClick={() => handleManageProject(project.id)}>
+                      Kelola
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

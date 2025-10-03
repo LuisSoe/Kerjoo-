@@ -13,6 +13,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { WorkerSidebar } from "@/components/worker-sidebar"
 import { MapPin, Mail, Calendar, Edit, Upload, FileText, Sparkles, Download, Eye } from "lucide-react"
+import { CVATSForm, defaultCvData, type CVData } from "@/components/cv-ats-form"
+import { generateCvPdf, cvDataToText } from "@/lib/cv-ats"
 
 export default function WorkerProfile() {
   const router = useRouter()
@@ -21,6 +23,9 @@ export default function WorkerProfile() {
   const [cvFile, setCvFile] = useState<File | null>(null)
   const [isGeneratingCV, setIsGeneratingCV] = useState(false)
   const [hasCV, setHasCV] = useState(false)
+  const [showCvForm, setShowCvForm] = useState(false)
+  const [cvData, setCvData] = useState<CVData>(defaultCvData)
+  const [cvPreview, setCvPreview] = useState<string>("")
 
   useEffect(() => {
     const userData = localStorage.getItem("kerjoo_user")
@@ -145,7 +150,7 @@ export default function WorkerProfile() {
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Upload CV Section */}
-                    <div className="space-y-3">
+                    <div className="space-y-8">
                       <Label htmlFor="cv-upload" className="text-base font-medium">
                         Upload CV (PDF)
                       </Label>
@@ -170,7 +175,7 @@ export default function WorkerProfile() {
                     </div>
 
                     {/* AI CV Builder Section */}
-                    <div className="space-y-3">
+                    <div className="space-y-8">
                       <Label className="text-base font-medium">Build CV dengan AI</Label>
                       <Button onClick={handleGenerateCV} disabled={isGeneratingCV} className="w-full h-12" size="lg">
                         {isGeneratingCV ? (
@@ -185,8 +190,50 @@ export default function WorkerProfile() {
                           </>
                         )}
                       </Button>
+                      <Button
+                        variant="outline"
+                        className="w-full bg-transparent"
+                        onClick={() => setShowCvForm((s) => !s)}
+                      >
+                        {showCvForm ? "Tutup Form CV ATS" : "Isi Form CV ATS (Template ATS)"}
+                      </Button>
                     </div>
                   </div>
+
+                  {showCvForm && (
+                    <div className="mt-4 space-y-4">
+                      <CVATSForm value={cvData} onChange={setCvData} />
+
+                      <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+                        <div className="flex gap-2">
+                          <Button variant="outline" type="button" onClick={() => setCvPreview(cvDataToText(cvData))}>
+                            Preview
+                          </Button>
+                          <Button
+                            type="button"
+                            onClick={() => {
+                              setCvPreview(cvDataToText(cvData))
+                              generateCvPdf(cvData, { mode: "download" })
+                              setHasCV(true)
+                            }}
+                          >
+                            Download PDF (ATS)
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Tip: Gunakan angka (%/jumlah) pada bullet untuk hasil ATS yang lebih kuat.
+                        </p>
+                      </div>
+
+                      {/* Lightweight text preview */}
+                      {cvPreview && (
+                        <div className="border rounded-lg p-4 bg-accent/30 border-[#374151]">
+                          <Label className="mb-2 block">Preview (Teks ATS)</Label>
+                          <pre className="whitespace-pre-wrap text-sm leading-6">{cvPreview}</pre>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {hasCV && (
                     <div className="flex items-center justify-between p-4 bg-accent/50 border-2 border-[#1f2937] rounded-lg">
@@ -200,11 +247,21 @@ export default function WorkerProfile() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          type="button"
+                          onClick={() => generateCvPdf(cvData, { mode: "preview" })}
+                        >
                           <Eye className="w-4 h-4 mr-1" />
                           Preview
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          type="button"
+                          onClick={() => generateCvPdf(cvData, { mode: "download" })}
+                        >
                           <Download className="w-4 h-4 mr-1" />
                           Download
                         </Button>

@@ -22,13 +22,11 @@ export function Navigation() {
   }, [])
 
   const handleLogout = () => {
-    localStorage.removeItem("kerjoo_user")
-    localStorage.removeItem("kerjoo_auth")
-    sessionStorage.removeItem("kerjoo_user")
-    sessionStorage.removeItem("kerjoo_auth")
+    localStorage.clear()
+    sessionStorage.clear()
     setUser(null)
-    router.push("/")
     setIsOpen(false)
+    window.location.href = "/"
   }
 
   if (isDashboardPage) {
@@ -62,9 +60,6 @@ export function Navigation() {
                   className="text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {user.role === "company" ? "Talent Pool" : "Cari Kerja"}
-                </Link>
-                <Link href="/learning" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Belajar
                 </Link>
                 {user.role === "worker" && (
                   <Link
@@ -146,13 +141,6 @@ export function Navigation() {
                     onClick={() => setIsOpen(false)}
                   >
                     {user.role === "company" ? "Talent Pool" : "Cari Kerja"}
-                  </Link>
-                  <Link
-                    href="/learning"
-                    className="block px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Belajar
                   </Link>
                   {user.role === "worker" && (
                     <Link

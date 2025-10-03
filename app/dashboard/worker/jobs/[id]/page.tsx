@@ -5,7 +5,19 @@ import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ArrowLeft, MapPin, Users, Star, Heart, Share2, Briefcase, Clock, DollarSign, CheckCircle } from "lucide-react"
+import {
+  ArrowLeft,
+  MapPin,
+  Users,
+  Star,
+  Heart,
+  Share2,
+  Briefcase,
+  Clock,
+  DollarSign,
+  CheckCircle,
+  Bookmark,
+} from "lucide-react"
 import Image from "next/image"
 
 const jobDetails = {
@@ -52,6 +64,9 @@ export default function JobDetailPage() {
   const [user, setUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isFollowing, setIsFollowing] = useState(false)
+  const [isLiked, setIsLiked] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
+  const [showShareMenu, setShowShareMenu] = useState(false)
   const router = useRouter()
   const params = useParams()
   const jobId = Number.parseInt(params.id as string)
@@ -83,6 +98,43 @@ export default function JobDetailPage() {
 
     checkAuth()
   }, [router])
+
+  const handleShare = async () => {
+    const shareData = {
+      title: job?.title || "Job Opportunity",
+      text: `Check out this job: ${job?.title} at ${job?.company}`,
+      url: window.location.href,
+    }
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData)
+      } catch (err) {
+        console.log("Error sharing:", err)
+      }
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href)
+      alert("Link copied to clipboard!")
+    }
+  }
+
+  const handleApplyNow = () => {
+    router.push(`/dashboard/worker/jobs/${jobId}/apply`)
+  }
+
+  const handleSaveJob = () => {
+    setIsSaved(!isSaved)
+    // Here you would typically save to backend/localStorage
+    const savedJobs = JSON.parse(localStorage.getItem("kerjoo_saved_jobs") || "[]")
+    if (!isSaved) {
+      savedJobs.push(jobId)
+      localStorage.setItem("kerjoo_saved_jobs", JSON.stringify(savedJobs))
+    } else {
+      const filtered = savedJobs.filter((id: number) => id !== jobId)
+      localStorage.setItem("kerjoo_saved_jobs", JSON.stringify(filtered))
+    }
+  }
 
   if (isLoading) {
     return (
@@ -169,10 +221,15 @@ export default function JobDetailPage() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="sm">
-                        <Heart className="h-5 w-5" />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsLiked(!isLiked)}
+                        className={isLiked ? "text-red-500" : ""}
+                      >
+                        <Heart className={`h-5 w-5 ${isLiked ? "fill-current" : ""}`} />
                       </Button>
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" onClick={handleShare}>
                         <Share2 className="h-5 w-5" />
                       </Button>
                     </div>
@@ -262,8 +319,17 @@ export default function JobDetailPage() {
 
                   {/* Apply button */}
                   <div className="flex gap-4">
-                    <Button className="flex-1 py-3">Apply Now</Button>
-                    <Button variant="outline">Save Job</Button>
+                    <Button className="flex-1 py-3" onClick={handleApplyNow}>
+                      Apply Now
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleSaveJob}
+                      className={isSaved ? "bg-primary text-primary-foreground" : ""}
+                    >
+                      <Bookmark className={`h-4 w-4 mr-2 ${isSaved ? "fill-current" : ""}`} />
+                      {isSaved ? "Saved" : "Save Job"}
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
