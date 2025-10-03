@@ -70,8 +70,8 @@ export async function registerUser(formData: FormData) {
     if (role === "worker") {
       console.log("[v0] Creating worker profile...")
       const [workerProfile] = await sql`
-        INSERT INTO worker_profiles (user_id, location, level, skill_points, availability_status, hourly_rate)
-        VALUES (${user.id}, 'Jakarta', 'beginner', 0, 'available', 50000)
+        INSERT INTO worker_profiles (user_id, location)
+        VALUES (${user.id}, 'Jakarta')
         RETURNING id
       `
       console.log("[v0] Worker profile created:", workerProfile.id)
