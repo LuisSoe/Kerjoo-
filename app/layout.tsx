@@ -7,6 +7,13 @@ import { Suspense } from "react"
 import { Navigation } from "@/components/navigation"
 import "./globals.css"
 
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-jakarta",
+  display: "swap",
+})
+
 export const metadata: Metadata = {
   title: "Kerjoo! - Platform Pekerja Mikro & HRD",
   description:
@@ -19,13 +26,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const jakarta = Plus_Jakarta_Sans({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700", "800"],
-    variable: "--font-jakarta",
-    display: "swap",
-  })
-
   return (
     <html lang="id" className="dark antialiased">
       <body className={`font-sans ${jakarta.variable} ${GeistMono.variable}`}>
