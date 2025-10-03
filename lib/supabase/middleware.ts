@@ -6,10 +6,16 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error("[v0] Missing Supabase environment variables")
+      return supabaseResponse
+    }
+
+    const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         getAll() {
           return request.cookies.getAll()
@@ -22,22 +28,29 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value, options }) => supabaseResponse.cookies.set(name, value, options))
         },
       },
-    },
-  )
+    })
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+    const isProtectedRoute =
+      request.nextUrl.pathname.startsWith("/dashboard") || request.nextUrl.pathname.startsWith("/protected")
 
-  // Protect dashboard routes
-  if (
-    !user &&
-    (request.nextUrl.pathname.startsWith("/dashboard") || request.nextUrl.pathname.startsWith("/protected"))
-  ) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/login"
-    return NextResponse.redirect(url)
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser()
+
+    if (error && isProtectedRoute) {
+      console.error("[v0] Auth error on protected route:", error.message)
+    }
+
+    if (!user && isProtectedRoute) {
+      const url = request.nextUrl.clone()
+      url.pathname = "/login"
+      return NextResponse.redirect(url)
+    }
+
+    return supabaseResponse
+  } catch (error) {
+    console.error("[v0] Middleware error:", error)
+    return supabaseResponse
   }
-
-  return supabaseResponse
 }
